@@ -1,5 +1,3 @@
-from datetime import datetime
-
 def set_stock_features(DataclassStock, res):
     meta = res["chart"]["result"][0]["meta"]
     # 最新のデータ(最後の値)を取得

@@ -7,8 +7,11 @@ def set_dataclassStock_item(stock_item):
     source = stock_item['source']
     url = ""
 
+    interval = '1m'
+    range_ = '1d'
+
     if source == 'yahoo':
-        url = build_yahoo_url(symbol, interval="1m", range="1d")
+        url = build_yahoo_url(symbol, interval=interval, range=range_)
 
     return DataclassStock(
         date_id=0,

@@ -1,7 +1,7 @@
 import asyncio
 import aiohttp
 
-from ..usecase.get_save_stock_price import get_save_stockPrice
+from .get_save_stock_price import get_save_stockPrice
 
 # n秒ごとにリクエストを送りレスポンスを保存する
 
