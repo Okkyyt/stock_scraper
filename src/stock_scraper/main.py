@@ -5,6 +5,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 from .api.scheduler import set_stock_instance
 from .usecase.getStockprice import get_aiohttp
+from .usecase.set_stock_feature import set_stock_features
 
 
 # インスタンスの作成
@@ -23,6 +24,9 @@ def say_hello():
     print(f"銘柄: {stock_instance.symbol_name}")
     session = app.state.session
     res = asyncio.run(get_aiohttp(session, stock_instance.url))
+    print(res)
+    # 株価情報を挿入するようでインスタンスをコピー
+    stock_instance_copy = set_stock_features(stock_instance, res)
 
 
 @app.on_event("startup")

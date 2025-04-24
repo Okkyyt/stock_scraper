@@ -23,6 +23,8 @@ async def get_aiohttp(session, url):
             res_ = await res.json()
     except Exception as e:
         # logger.error(f"Exception: {e}")
+        print(f"Exception: {e}")
         return None
 
+    print(f'取得：{res_}')
     return res_
