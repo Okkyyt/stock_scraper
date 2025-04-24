@@ -1,7 +1,6 @@
-import asyncio
 import aiohttp
 from fastapi import FastAPI
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from .api.scheduler import set_stock_instance
 from .usecase.getStockprice import get_aiohttp
@@ -20,11 +19,10 @@ async def root():
 
 
 # 定期実行処理
-def say_hello():
+async def say_hello():
     print(f"銘柄: {stock_instance.symbol_name}")
     session = app.state.session
-    res = asyncio.run(get_aiohttp(session, stock_instance.url))
-    print(res)
+    res = await get_aiohttp(session, stock_instance.url)
     # 株価情報を挿入するようでインスタンスをコピー
     stock_instance_copy = set_stock_features(stock_instance, res)
 
@@ -34,7 +32,8 @@ async def skd_startup():
     # aiohttp セッション作成
     app.state.session = aiohttp.ClientSession()
     # スケジューラのインスタンスを作成
-    scheduler = BackgroundScheduler()
+    scheduler = AsyncIOScheduler()
+
     # スケジューラに定期実行する関数を登録
     scheduler.add_job(say_hello, "interval", seconds=5)
     # スケジューラを開始
