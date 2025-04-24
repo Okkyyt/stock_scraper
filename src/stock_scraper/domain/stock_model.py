@@ -11,4 +11,3 @@ class DataclassStock:
     url: str  # 例: "https://query1.finance.yahoo.com/..."
     source: str  # 例: "yahoo"
     feature_: Dict[str, float]  # 株価データ（open, close, volumeなど）
-    

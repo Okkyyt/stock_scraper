@@ -1,14 +1,7 @@
-import asyncio
-import aiohttp
 from fastapi import FastAPI
+from sched import scheduler
 from apscheduler.schedulers.background import BackgroundScheduler
-
-from .api.scheduler import set_stock_instance
-from .usecase.getStockprice import get_aiohttp
-
-
-# インスタンスの作成
-stock_instance = set_stock_instance("AAPL")
+from .scheduler import set_stock_instance
 
 app = FastAPI()
 
@@ -20,15 +13,12 @@ async def root():
 
 # 定期実行処理
 def say_hello():
-    print(f"銘柄: {stock_instance.symbol_name}")
-    session = app.state.session
-    res = asyncio.run(get_aiohttp(session, stock_instance.url))
+    print("Hello, world!")
+    print(set_stock_instance("AAPL"))
 
 
 @app.on_event("startup")
-async def skd_startup():
-    # aiohttp セッション作成
-    app.state.session = aiohttp.ClientSession()
+def skd_startup():
     # スケジューラのインスタンスを作成
     scheduler = BackgroundScheduler()
     # スケジューラに定期実行する関数を登録
@@ -38,9 +28,7 @@ async def skd_startup():
 
 
 @app.on_event("shutdown")
-async def shutdown_event():
-    # aiohttpセッション終了
-    await app.state.session.close()
+def shutdown_event():
     # スケジューラを停止
-    app.state.scheduler.shutdown()
+    scheduler.shutdown()
     print("Scheduler stopped.")
