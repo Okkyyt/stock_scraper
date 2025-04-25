@@ -187,6 +187,19 @@ wheels = [
 ]
 
 [[package]]
+name = "psycopg"
+version = "3.2.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions" },
+    { name = "tzdata", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/67/97/eea08f74f1c6dd2a02ee81b4ebfe5b558beb468ebbd11031adbf58d31be0/psycopg-3.2.6.tar.gz", hash = "sha256:16fa094efa2698f260f2af74f3710f781e4a6f226efe9d1fd0c37f384639ed8a", size = 156322 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d7/7d/0ba52deff71f65df8ec8038adad86ba09368c945424a9bd8145d679a2c6a/psycopg-3.2.6-py3-none-any.whl", hash = "sha256:f3ff5488525890abb0566c429146add66b329e20d6d4835662b920cbbf90ac58", size = 199077 },
+]
+
+[[package]]
 name = "pydantic"
 version = "2.11.3"
 source = { registry = "https://pypi.org/simple" }
@@ -273,6 +286,7 @@ dependencies = [
     { name = "aiohttp" },
     { name = "apscheduler" },
     { name = "fastapi" },
+    { name = "psycopg" },
     { name = "python-dotenv" },
 ]
 
@@ -281,6 +295,7 @@ requires-dist = [
     { name = "aiohttp", specifier = "==3.9.3" },
     { name = "apscheduler", specifier = "==3.11.0" },
     { name = "fastapi", specifier = "==0.110.0" },
+    { name = "psycopg", specifier = "==3.2.6" },
     { name = "python-dotenv", specifier = "==1.0.1" },
 ]
 

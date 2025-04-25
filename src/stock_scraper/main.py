@@ -3,8 +3,9 @@ from fastapi import FastAPI
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from .api.scheduler import set_stock_instance
-from .usecase.getStockprice import get_aiohttp
+from .usecase.get_stockPrice import get_aiohttp
 from .usecase.set_stock_feature import set_stock_features
+from .infrastructure.db.insert_stock_instanse import insert_stock_instance
 
 
 # インスタンスの作成
@@ -23,8 +24,9 @@ async def say_hello():
     print(f"銘柄: {stock_instance.symbol_name}")
     session = app.state.session
     res = await get_aiohttp(session, stock_instance.url)
-    # 株価情報を挿入するようでインスタンスをコピー
+    # 株価情報を挿入するようにインスタンスをコピー
     stock_instance_copy = set_stock_features(stock_instance, res)
+    # インスタンスをdbに保存する
 
 
 @app.on_event("startup")

@@ -21,9 +21,9 @@ def set_stock_features(stock_instance, res):
         "regularMarketPrice": meta["regularMarketPrice"],
     }
 
-    print(f'datetime: {datetime}')
-    print(f'indicators: {indicator_stock_price}')
-    print(f'meta: {meta_stock_price}')
+    print(f"datetime: {datetime}")
+    print(f"indicators: {indicator_stock_price}")
+    print(f"meta: {meta_stock_price}")
 
     stock_instance.feature_ = {
         "indicator": indicator_stock_price,
