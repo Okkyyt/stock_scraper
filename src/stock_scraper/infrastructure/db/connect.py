@@ -1,35 +1,32 @@
 import psycopg
-import sys
-import boto3
-
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
+# クラスターエンドポイント
 AURORA_ENDOPOINT = os.getenv("AURORA_ENDPOINT")
-PORT = 5432
+# ポート
+PORT = "5432"
+# 設定ー＞マスターユーザー名
 USER = os.getenv("AURORA_USER")
+# パスワード(Secret Manager)
+AURORA_PASSWORD = os.getenv("AURORA_PASSWORD")
+# リージョン
 REGION = os.getenv("REGION")
+# 設定ー＞DB名
 DB_NAME = os.getenv("DB_NAME")
 
-session = boto3.Session(profile_name='default')
-client = session.client('rds')
+def make_conn():
+    # psycopgで普通に接続
+    conn = psycopg.connect(
+        host=AURORA_ENDOPOINT,
+        port=PORT,
+        user=USER,
+        password=AURORA_PASSWORD,
+        dbname=DB_NAME,
+    )
 
-token = client.generate_db_auth_token(
-    DBHostname=AURORA_ENDOPOINT,
-    Port=PORT,
-    DBUsername=USER,
-    Region=REGION
-)
-
-
-conn = psycopg.connect(
-    host=AURORA_ENDOPOINT,
-    port=PORT,
-    user=USER,
-    password=token,
-    dbname=DB_NAME,
-    sslmode='require'
-)
-print("✅ DB接続成功")
+    # psycopgで接続確認
+    print("✅ DB接続成功")
+    return conn

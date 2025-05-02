@@ -1,12 +1,8 @@
-import psycopg
-
+from stock_scraper.infrastructure.db.connect import make_conn
 
 def create_tables():
     try:
-        with psycopg.connect(
-            # DBの接続情報
-            "dbname=test user=postgres"
-        ) as conn:
+        with make_conn() as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     """

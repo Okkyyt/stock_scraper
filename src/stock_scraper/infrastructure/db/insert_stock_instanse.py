@@ -1,15 +1,11 @@
-# データベースにstock_instanceを保存
-import psycopg
-
+from stock_scraper.infrastructure.db.connect import make_conn
 
 def insert_stocke_instance(stock_instance):
     """
     stock_instanceをDBに保存する
     """
     # DBに接続
-    with psycopg.connect(
-        # DBの接続情報
-    ) as conn:
+    with make_conn() as conn:
         with conn.cursor() as cur:
             # symbol_dataテーブルにデータを挿入
             cur.execute(

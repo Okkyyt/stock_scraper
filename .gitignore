@@ -3,5 +3,5 @@
 .env
 __pycache__/
 stock-scraper_accessKeys.csv
-/terraform/variables.tf
 /terraform/.terraform
+/terraform/terraform.tfvars
