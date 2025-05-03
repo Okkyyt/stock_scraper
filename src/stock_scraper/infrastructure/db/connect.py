@@ -1,6 +1,7 @@
-import psycopg
+import asyncpg
 import os
 from dotenv import load_dotenv
+import asyncio
 
 load_dotenv()
 
@@ -17,16 +18,24 @@ REGION = os.getenv("REGION")
 # 設定ー＞DB名
 DB_NAME = os.getenv("DB_NAME")
 
-def make_conn():
-    # psycopgで普通に接続
-    conn = psycopg.connect(
-        host=AURORA_ENDOPOINT,
-        port=PORT,
-        user=USER,
-        password=AURORA_PASSWORD,
-        dbname=DB_NAME,
-    )
 
-    # psycopgで接続確認
-    print("✅ DB接続成功")
-    return conn
+async def make_conn():
+    try:
+        # asyncpgで普通に接続
+        conn = await asyncpg.connect(
+            host=AURORA_ENDOPOINT,
+            port=PORT,
+            user=USER,
+            password=AURORA_PASSWORD,
+            database=DB_NAME,
+        )
+
+        # psycopgで接続確認
+        print("✅ DB接続成功")
+        return conn
+    except Exception as e:
+        print("❌ DB接続失敗:", e)
+        return None
+
+# 確認
+# print(asyncio.run(make_conn()))

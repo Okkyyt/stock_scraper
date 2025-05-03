@@ -1,11 +1,14 @@
 import aiohttp
 from fastapi import FastAPI
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+import uvicorn
 
 from .api.scheduler import set_stock_instance
-from .usecase.get_stockPrice import get_aiohttp
+from .usecase.scraping import get_aiohttp
 from .usecase.set_stock_feature import set_stock_features
-from .infrastructure.db.insert_stock_instanse import insert_stock_instance
+from .infrastructure.db.insert_stock_instanse import insert_stocke_instance
+from .infrastructure.db.connect import make_conn
+from .infrastructure.db.create_table import create_tables
 
 
 # インスタンスの作成
@@ -26,7 +29,9 @@ async def say_hello():
     res = await get_aiohttp(session, stock_instance.url)
     # 株価情報を挿入するようにインスタンスをコピー
     stock_instance_copy = set_stock_features(stock_instance, res)
+    print(f'株価情報🚀: {stock_instance_copy}')
     # インスタンスをdbに保存する
+    await insert_stocke_instance(stock_instance_copy)
 
 
 @app.on_event("startup")
@@ -35,7 +40,10 @@ async def skd_startup():
     app.state.session = aiohttp.ClientSession()
     # スケジューラのインスタンスを作成
     scheduler = AsyncIOScheduler()
-
+    app.state.scheduler = scheduler
+    # データベースの接続
+    app.state.db = await make_conn()
+    await create_tables() # IF NOT EXISTS付き
     # スケジューラに定期実行する関数を登録
     scheduler.add_job(say_hello, "interval", seconds=5)
     # スケジューラを開始
@@ -49,3 +57,7 @@ async def shutdown_event():
     # スケジューラを停止
     app.state.scheduler.shutdown()
     print("Scheduler stopped.")
+
+def main():
+    uvicorn.run("stock_scraper.main:app", host="127.0.0.1", port=8000, reload=True)
+
