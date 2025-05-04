@@ -44,8 +44,7 @@ async def skd_startup():
     # データベースのテーブル作成
     await create_tables() # IF NOT EXISTS付き
     # スケジューラに定期実行する関数を登録(15:30に実行)
-    # scheduler.add_job(say_hello, "cron", hour=15, minute=30)
-    scheduler.add_job(say_hello, "interval", seconds=10)
+    scheduler.add_job(say_hello, "cron", hour=15, minute=30)
     # スケジューラを開始
     scheduler.start()
 
