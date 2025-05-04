@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import uvicorn
 
-from .api.scheduler import set_stock_instance
+from .api.set_stock_instance import set_stock_instance
 from .usecase.scraping import get_aiohttp
 from .usecase.set_stock_feature import set_stock_features
 from .infrastructure.db.insert_stock_instanse import insert_stocke_instance
@@ -44,7 +44,8 @@ async def skd_startup():
     # データベースのテーブル作成
     await create_tables() # IF NOT EXISTS付き
     # スケジューラに定期実行する関数を登録(15:30に実行)
-    scheduler.add_job(say_hello, "cron", hour=15, minute=30)
+    # scheduler.add_job(say_hello, "cron", hour=15, minute=30)
+    scheduler.add_job(say_hello, "interval", seconds=10)
     # スケジューラを開始
     scheduler.start()
 

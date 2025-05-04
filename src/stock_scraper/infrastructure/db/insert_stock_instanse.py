@@ -28,9 +28,9 @@ async def insert_stocke_instance(stock_instance):
             """,
           
             stock_instance.symbol_id,
+            stock_instance.date_id,
+            stock_instance.time_id,
             stock_instance.feature_["meta"]["regularMarketTime"],
-            None,
-            None,
             stock_instance.feature_["meta"]["regularMarketPrice"],
        
         )
@@ -41,8 +41,8 @@ async def insert_stocke_instance(stock_instance):
             """,
             
             stock_instance.symbol_id,
-            None,
-            None,
+            stock_instance.date_id,
+            stock_instance.time_id,
             stock_instance.feature_["indicator"]["open"],
             stock_instance.feature_["indicator"]["high"],
             stock_instance.feature_["indicator"]["low"],

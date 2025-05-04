@@ -23,7 +23,7 @@ async def create_tables():
                 symbol_id VARCHAR(10) REFERENCES symbol_data(symbol_id),
                 date_id integer,
                 time_id integer,
-                regular_market_time TIMESTAMP,
+                regular_market_time integer,
                 regular_market_price NUMERIC,
                 interval VARCHAR(10)
             );
