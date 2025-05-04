@@ -41,11 +41,10 @@ async def skd_startup():
     # スケジューラのインスタンスを作成
     scheduler = AsyncIOScheduler()
     app.state.scheduler = scheduler
-    # データベースの接続
-    app.state.db = await make_conn()
+    # データベースのテーブル作成
     await create_tables() # IF NOT EXISTS付き
-    # スケジューラに定期実行する関数を登録
-    scheduler.add_job(say_hello, "interval", seconds=5)
+    # スケジューラに定期実行する関数を登録(15:30に実行)
+    scheduler.add_job(say_hello, "cron", hour=15, minute=30)
     # スケジューラを開始
     scheduler.start()
 

@@ -47,5 +47,6 @@ async def create_tables():
             """
         )
         print("✅ テーブル作成")
+        await conn.close()
     except Exception as e:
         print("❌ エラー:", e)
