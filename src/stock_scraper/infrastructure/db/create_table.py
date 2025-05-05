@@ -1,9 +1,10 @@
 from stock_scraper.infrastructure.db.connect import make_conn
 
+
 async def create_tables():
     conn = await make_conn()
     try:
-        
+
         await conn.execute(
             """
             CREATE TABLE IF NOT EXISTS symbol_data (
@@ -46,7 +47,8 @@ async def create_tables():
             );
             """
         )
-        print("✅ テーブル作成")
+        print("✅ テーブル作成 or 作成済み")
         await conn.close()
+        print("✅ DB接続終了")
     except Exception as e:
         print("❌ エラー:", e)

@@ -3,7 +3,7 @@ from ..domain.stock_model import DataclassStock
 from ..usecase.url_builder import build_yahoo_url
 
 
-def set_stock_instance(symbol: str):
+def set_stock_instance(symbol: str, interval: str, range_: str) -> DataclassStock:
     """
     銘柄情報をconfigから取得し, インスタンスの生成
     """
@@ -12,8 +12,6 @@ def set_stock_instance(symbol: str):
     # インスタンスの作成
     symbol_ = stock_config["symbols"][symbol]
     # スクレイピングソースからURLを作成
-    interval = "1d"
-    range_ = "1d"
     url = None
     if symbol_["source"] == "yahoo":
         url = build_yahoo_url(symbol, interval, range_)
