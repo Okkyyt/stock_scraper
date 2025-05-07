@@ -1,6 +1,6 @@
 from ..config_loader import load_stock_config
 from ..domain.stock_model import DataclassStock
-from ..usecase.url_builder import build_yahoo_url
+from ..usecase.YahooFinance.url_builder import build_yahoo_url
 
 
 def set_stock_instance(symbol: str, interval: str, range_: str) -> DataclassStock:

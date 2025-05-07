@@ -3,7 +3,7 @@ import asyncio
 
 from stock_scraper.api.set_stock_instance import set_stock_instance
 from stock_scraper.api.set_stock_features import set_stock_features
-from stock_scraper.usecase.scraping import get_aiohttp
+from stock_scraper.usecase.YahooFinance.scraping import get_aiohttp
 from stock_scraper.infrastructure.db.insert_stock_instanse import insert_stocke_instance
 
 # インスタンスの作成

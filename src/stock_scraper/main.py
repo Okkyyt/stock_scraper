@@ -5,7 +5,7 @@ import uvicorn
 
 from .api.set_stock_instance import set_stock_instance
 from .api.set_stock_features import set_stock_features
-from .usecase.scraping import get_aiohttp
+from .usecase.YahooFinance.scraping import get_aiohttp
 from .infrastructure.db.create_table import create_tables
 from .infrastructure.db.insert_stock_instanse import insert_stocke_instance
 
