@@ -5,16 +5,14 @@ import asyncio
 
 load_dotenv()
 
-# クラスターエンドポイント
-AURORA_ENDOPOINT = os.getenv("AURORA_ENDPOINT")
+# エンドポイント
+DB_ENDOPOINT = os.getenv("DB_ENDPOINT")
 # ポート
 PORT = "5432"
-# 設定ー＞マスターユーザー名
-USER = os.getenv("AURORA_USER")
-# パスワード(Secret Manager)
-AURORA_PASSWORD = os.getenv("AURORA_PASSWORD")
-# リージョン
-REGION = os.getenv("REGION")
+# 設定
+USER = os.getenv("DB_USER")
+# パスワード
+DB_PASSWORD = os.getenv("DB_PASSWORD")
 # 設定ー＞DB名
 DB_NAME = os.getenv("DB_NAME")
 
@@ -23,10 +21,10 @@ async def make_conn():
     try:
         # asyncpgで普通に接続
         conn = await asyncpg.connect(
-            host=AURORA_ENDOPOINT,
+            host=DB_ENDOPOINT,
             port=PORT,
             user=USER,
-            password=AURORA_PASSWORD,
+            password=DB_PASSWORD,
             database=DB_NAME,
         )
 
