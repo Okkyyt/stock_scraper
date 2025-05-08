@@ -1,0 +1,33 @@
+import argparse
+
+def execute_cli():
+    parser = argparse.ArgumentParser(
+        prog="Stock Scraper",
+        description="A simple stock scraper",
+    )
+
+    parser.add_argument(
+        "-s",
+        "--symbol",
+        type=str,
+        help="Stock symbol to scrape",
+        required=True,
+    )
+
+    parser.add_argument(
+        "-i",
+        "--interval",
+        type=str,
+        help="Interval for stock data",
+        required=True,
+    )
+
+    parser.print_help()
+
+    args = parser.parse_args()
+    print(args.symbol)
+    print(args.interval)
+
+    return args
+
+execute_cli()

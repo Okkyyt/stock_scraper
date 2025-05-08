@@ -15,6 +15,8 @@ def set_stock_instance(symbol: str, interval: str, range_: str) -> DataclassStoc
     url = None
     if symbol_["source"] == "yahoo":
         url = build_yahoo_url(symbol, interval, range_)
+    if symbol_["source"] == "Finhub":
+        pass
 
     stock_instance = DataclassStock(
         date_id=None,

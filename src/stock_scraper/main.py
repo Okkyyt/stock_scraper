@@ -1,17 +1,22 @@
 import aiohttp
+import websockets
 from fastapi import FastAPI
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import uvicorn
 
+
+from .domain.execute_cli import execute_cli
 from .api.set_stock_instance import set_stock_instance
 from .api.set_stock_features import set_stock_features
 from .usecase.YahooFinance.scraping import get_aiohttp
 from .infrastructure.db.create_table import create_tables
 from .infrastructure.db.insert_stock_instanse import insert_stocke_instance
 
+# CLI引数の取得
+args = execute_cli()
 
 # インスタンスの作成
-stock_instance = set_stock_instance("AAPL", "1d", "1d")
+stock_instance = set_stock_instance(args.symbol, args.interval, "1d")
 
 app = FastAPI()
 
@@ -26,8 +31,9 @@ async def say_hello():
     print(f"銘柄: {stock_instance.symbol_name}")
     # aiohttpセッションを取得
     session = app.state.session
-    # スクレイピングを実行
+    # レスポンスの取得
     res = await get_aiohttp(session, stock_instance.url)
+    # res = await get_stockPrice(session)
     # 株価情報を挿入するようにインスタンスをコピー
     stock_instance_copy = set_stock_features(stock_instance, res)
     print(f"株価情報🚀: {stock_instance_copy}")
@@ -39,13 +45,15 @@ async def say_hello():
 async def skd_startup():
     # aiohttp セッション作成
     app.state.session = aiohttp.ClientSession()
+    # websocketセッション作成
     # スケジューラのインスタンスを作成
     scheduler = AsyncIOScheduler()
     app.state.scheduler = scheduler
     # データベースのテーブル作成
     await create_tables()  # IF NOT EXISTS付き
     # スケジューラに定期実行する関数を登録(15:30に実行)
-    scheduler.add_job(say_hello, "cron", hour=15, minute=30)
+    # scheduler.add_job(say_hello, "cron", hour=15, minute=30)
+    scheduler.add_job(say_hello, "interval", seconds=10)
     # スケジューラを開始
     scheduler.start()
 

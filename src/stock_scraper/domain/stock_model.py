@@ -9,5 +9,6 @@ class DataclassStock:
     symbol_id: str  # 例: "AAPL"
     symbol_name: str  # 例: "Apple"
     url: str  # 例: "https://query1.finance.yahoo.com/..."
+    interval: str # 例: "1d"
     source: str  # 例: "yahoo"
     feature_: Dict[str, float]  # 株価データ（open, close, volumeなど）
