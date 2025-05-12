@@ -10,7 +10,12 @@ from .infrastructure.db.insert_stock_instanse import insert_stocke_instance
 from .usecase.build_message import build_message
 from .usecase.scraping import websocket_scraping
 
-FINHUB_API_KEY = "d0gkht1r01qhao4u71c0d0gkht1r01qhao4u71cg"
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+FINHUB_API_KEY = os.getenv("FINHUB_API_KEY")
 
 # CLI引数の取得
 args = execute_cli()
