@@ -22,11 +22,20 @@ def execute_cli():
         required=True,
     )
 
+    parser.add_argument(
+        "-r",
+        "--range",
+        type=str,
+        help="Range for stock data",
+        default="1d",
+    )
+
     parser.print_help()
 
     args = parser.parse_args()
     print(args.symbol)
     print(args.interval)
+    print(args.range)
 
     return args
 

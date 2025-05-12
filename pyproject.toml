@@ -21,9 +21,11 @@ dependencies = [
 [project.scripts]
 stock-scraper = "stock_scraper:main.main"
 
+# buildバックエンドを指定
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling >= 1.26"]
 build-backend = "hatchling.build"
 
+# ツールに特化した設定
 [tool.hatch.build.targets.wheel]
 packages = ["src/stock_scraper", "scripts", "tests"]

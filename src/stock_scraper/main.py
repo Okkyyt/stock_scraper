@@ -1,22 +1,22 @@
-import aiohttp
-import websockets
 from fastapi import FastAPI
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import uvicorn
-
+import websockets
 
 from .domain.execute_cli import execute_cli
 from .api.set_stock_instance import set_stock_instance
-from .api.set_stock_features import set_stock_features
-from .usecase.YahooFinance.scraping import get_aiohttp
 from .infrastructure.db.create_table import create_tables
 from .infrastructure.db.insert_stock_instanse import insert_stocke_instance
+from .usecase.build_message import build_message
+from .usecase.scraping import websocket_scraping
+
+FINHUB_API_KEY = "d0gkht1r01qhao4u71c0d0gkht1r01qhao4u71cg"
 
 # CLI引数の取得
 args = execute_cli()
 
 # インスタンスの作成
-stock_instance = set_stock_instance(args.symbol, args.interval, "1d")
+stock_instance = set_stock_instance(args.symbol, args.interval, args.range)
 
 app = FastAPI()
 
@@ -31,11 +31,19 @@ async def say_hello():
     print(f"銘柄: {stock_instance.symbol_name}")
     # aiohttpセッションを取得
     session = app.state.session
-    # レスポンスの取得
-    res = await get_aiohttp(session, stock_instance.url)
-    # res = await get_stockPrice(session)
-    # 株価情報を挿入するようにインスタンスをコピー
-    stock_instance_copy = set_stock_features(stock_instance, res)
+    # スクレイピングに必要なパス（メッセージ）を作成
+    message = build_message(stock_instance)
+    # スクレイピング
+    res = await websocket_scraping(session, message)
+    # レスポンスの正則化
+    # reshaped_res = await reshape_res(res)
+    reshaped_res = None
+    # インスタンスの更新
+    stock_instance_copy = set_stock_instance(
+        stock_instance,
+        reshaped_res
+    )
+
     print(f"株価情報🚀: {stock_instance_copy}")
     # インスタンスをdbに保存する
     await insert_stocke_instance(stock_instance_copy)
@@ -43,9 +51,10 @@ async def say_hello():
 
 @app.on_event("startup")
 async def skd_startup():
-    # aiohttp セッション作成
-    app.state.session = aiohttp.ClientSession()
-    # websocketセッション作成
+    # セッション作成
+    app.state.session = websockets.connect(
+        f"wss://ws.finnhub.io?token={FINHUB_API_KEY}"
+    )
     # スケジューラのインスタンスを作成
     scheduler = AsyncIOScheduler()
     app.state.scheduler = scheduler
