@@ -2,15 +2,16 @@ import json
 
 
 async def get_aiohttp(session, url):
-    async with session.get(url) as res:
-        print(res.status)
-        if res.status == 200:
+    try:
+        async with session.get(url) as res:
+            print(f'ステータス：{res.status}')
             return await res.json()
-        else:
-            raise Exception(f"Error: {res.status}")
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return None
 
 
 async def get_websocket(session, message):
-    session.send(message)
-    res = session.recv()
+    await session.send(message)
+    res = await session.recv()
     return json.loads(res)

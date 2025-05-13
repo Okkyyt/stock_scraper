@@ -33,7 +33,7 @@ async def pipline():
     # url, messageの作成
     preprocess = scraping_instance.preprocess(stock_instance)
     # スクレイピングの実行
-    response = scraping_instance.scraping(session, preprocess)
+    response = await scraping_instance.scraping(session, preprocess)
     # 取得したデータの整形
     postprocess = scraping_instance.postprocess(response)
     # stock_instanceの更新
@@ -58,11 +58,13 @@ async def skd_startup():
     scheduler = AsyncIOScheduler()
     app.state.scheduler = scheduler
     # データベースのテーブル作成
-    await create_tables()  # IF NOT EXISTS付き
+    # await create_tables()  # IF NOT EXISTS付き
 
     # range_interval次第
     # スケジューラに定期実行する関数を登録(15:30に実行)
     scheduler.add_job(pipline, "cron", hour=15, minute=30)
+    # テスト用に10秒ごとに実行
+    scheduler.add_job(pipline, "interval", seconds=10)
 
     # スケジューラを開始
     scheduler.start()

@@ -1,6 +1,12 @@
 import aiohttp
+import os
+from dotenv import load_dotenv
 
 from ..scraping import get_aiohttp
+
+load_dotenv()
+
+ALPHAVANTAGE_API_KEY = os.getenv("ALPHAVANTAGE_API_KEY")
 
 
 class AlphaVantage:
@@ -10,7 +16,7 @@ class AlphaVantage:
 
     # スクレイピングurlの作成、メッセージの作成
     def preprocess(self, stock_instance):
-        url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={stock_instance.symbol_name}&interval={stock_instance.interval}&apikey=YOUR_API_KEY"
+        url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={stock_instance.symbol_name}&interval={stock_instance.interval}&apikey={ALPHAVANTAGE_API_KEY}&datatype=json"
         return url
 
     # スクレイピングの実行
@@ -19,6 +25,5 @@ class AlphaVantage:
 
     # 取得したデータの整形
     def postprocess(self, response):
-        # ここでレスポンスを整形する処理を実装
-        # 例: JSON形式のレスポンスを辞書型に変換
-        return response.json()
+        print(type(response))
+        pass

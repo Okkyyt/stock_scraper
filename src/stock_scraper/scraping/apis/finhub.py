@@ -12,7 +12,7 @@ FINHUB_API_KEY = os.getenv("FINHUB_API_KEY")
 
 class Finhub:
     def create_session(self):
-        return websockets.connect()
+        return websockets.connect(f"wss://ws.finnhub.io?token={FINHUB_API_KEY}")
 
     def preprocess(self, stock_instance):
         message = {
