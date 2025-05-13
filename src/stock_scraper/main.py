@@ -1,5 +1,5 @@
 import importlib
-
+import copy
 import uvicorn
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
@@ -34,10 +34,11 @@ async def pipline():
     preprocess = scraping_instance.preprocess(stock_instance)
     # スクレイピングの実行
     response = await scraping_instance.scraping(session, preprocess)
+    print(f"レスポンス: {response}")
     # 取得したデータの整形
     postprocess = scraping_instance.postprocess(response)
     # stock_instanceの更新
-    stock_instance_copy = stock_instance.copy()
+    stock_instance_copy = copy.deepcopy(stock_instance)
     stock_instance_copy.stock_data = postprocess
 
     print(f"株価情報🚀: {stock_instance_copy}")
@@ -53,7 +54,7 @@ async def root():
 @app.on_event("startup")
 async def skd_startup():
     # セッション作成
-    app.state.session = scraping_instance.create_session()
+    app.state.session = await scraping_instance.create_session()
     # スケジューラのインスタンスを作成
     scheduler = AsyncIOScheduler()
     app.state.scheduler = scheduler
@@ -62,9 +63,9 @@ async def skd_startup():
 
     # range_interval次第
     # スケジューラに定期実行する関数を登録(15:30に実行)
-    scheduler.add_job(pipline, "cron", hour=15, minute=30)
+    scheduler.add_job(pipline, "cron", hour=15, minute=30, max_instances=5)
     # テスト用に10秒ごとに実行
-    scheduler.add_job(pipline, "interval", seconds=10)
+    scheduler.add_job(pipline, "interval", seconds=10, max_instances=5)
 
     # スケジューラを開始
     scheduler.start()

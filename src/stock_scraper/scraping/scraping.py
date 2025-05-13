@@ -12,6 +12,6 @@ async def get_aiohttp(session, url):
 
 
 async def get_websocket(session, message):
-    await session.send(message)
+    await session.send(json.dumps(message))
     res = await session.recv()
     return json.loads(res)
