@@ -30,12 +30,7 @@ def execute_cli():
         default="1d",
     )
 
-    parser.print_help()
-
     args = parser.parse_args()
-    print(args.symbol)
-    print(args.interval)
-    print(args.range)
 
     return args
 

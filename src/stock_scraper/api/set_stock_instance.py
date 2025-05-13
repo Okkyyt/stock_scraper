@@ -18,6 +18,7 @@ def set_stock_instance(symbol: str, interval: str, range_: str) -> DataclassStoc
         symbol_id=symbol,
         symbol_name=symbol_["name"],
         url=None,
+        interval=interval,
         source=symbol_["source"],
         feature_={},
     )

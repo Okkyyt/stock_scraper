@@ -12,11 +12,13 @@ from .infrastructure.db.insert_stock_instanse import insert_stocke_instance
 # CLI引数の取得
 args = execute_cli()
 
-# インスタンスの作成
-stock_instance = set_stock_instance(args.symbol, args.interval, args.range) # 銘柄情報を格納するためのインスタンス
-scraping_instance = importlib.import_module(
-    f"src.stock_scraper.scraping.apis.{args.api}"
-) # 使用するAPIのインスタンス
+# 銘柄情報を格納するためのインスタンス
+stock_instance = set_stock_instance(args.symbol, args.interval, args.range)
+# スクレイピングのインスタンス
+module = importlib.import_module(
+    f"src.stock_scraper.scraping.apis.{stock_instance.source}"
+)
+scraping_instance = getattr(module, ''.join(word.capitalize() for word in stock_instance.source.split('_')))() # getattr(ファイル名, クラス名) -> classの取得
 
 app = FastAPI()
 
@@ -54,9 +56,11 @@ async def skd_startup():
     app.state.scheduler = scheduler
     # データベースのテーブル作成
     await create_tables()  # IF NOT EXISTS付き
+
+    # range_interval次第
     # スケジューラに定期実行する関数を登録(15:30に実行)
-    # scheduler.add_job(say_hello, "cron", hour=15, minute=30)
-    scheduler.add_job(pipline, "interval", seconds=10)
+    scheduler.add_job(pipline, "cron", hour=15, minute=30)
+
     # スケジューラを開始
     scheduler.start()
 
