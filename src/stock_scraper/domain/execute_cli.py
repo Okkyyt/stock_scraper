@@ -1,5 +1,6 @@
 import argparse
 
+
 def execute_cli():
     parser = argparse.ArgumentParser(
         prog="Stock Scraper",
@@ -22,12 +23,17 @@ def execute_cli():
         required=True,
     )
 
-    parser.print_help()
+    parser.add_argument(
+        "-r",
+        "--range",
+        type=str,
+        help="Range for stock data",
+        default="1d",
+    )
 
     args = parser.parse_args()
-    print(args.symbol)
-    print(args.interval)
 
     return args
+
 
 execute_cli()

@@ -28,13 +28,13 @@
       "name": "Toyota",
       "type": "stock",
       "country": "JP",
-      "source": "yahoo"
+      "source": "alpha_vantage"
     },
     "9432.T": {
       "name": "NTT",
       "type": "stock",
       "country": "JP",
-      "source": "yahoo"
+      "source": "alpha_vantage"
     } 
   }
 }

@@ -1,6 +1,5 @@
 from ..config_loader import load_stock_config
 from ..domain.stock_model import DataclassStock
-from ..usecase.YahooFinance.url_builder import build_yahoo_url
 
 
 def set_stock_instance(symbol: str, interval: str, range_: str) -> DataclassStock:
@@ -11,19 +10,15 @@ def set_stock_instance(symbol: str, interval: str, range_: str) -> DataclassStoc
     stock_config = load_stock_config()
     # インスタンスの作成
     symbol_ = stock_config["symbols"][symbol]
-    # スクレイピングソースからURLを作成
-    url = None
-    if symbol_["source"] == "yahoo":
-        url = build_yahoo_url(symbol, interval, range_)
-    if symbol_["source"] == "Finhub":
-        pass
 
+    # インスタンスを生成
     stock_instance = DataclassStock(
         date_id=None,
         time_id=None,
         symbol_id=symbol,
         symbol_name=symbol_["name"],
-        url=url,
+        url=None,
+        interval=interval,
         source=symbol_["source"],
         feature_={},
     )
