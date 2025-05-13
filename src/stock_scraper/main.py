@@ -1,13 +1,13 @@
-from fastapi import FastAPI
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-import uvicorn
 import importlib
 
-from .domain.execute_cli import execute_cli
+import uvicorn
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from fastapi import FastAPI
+
 from .api.set_stock_instance import set_stock_instance
+from .domain.execute_cli import execute_cli
 from .infrastructure.db.create_table import create_tables
 from .infrastructure.db.insert_stock_instanse import insert_stocke_instance
-
 
 # CLI引数の取得
 args = execute_cli()
@@ -18,13 +18,11 @@ stock_instance = set_stock_instance(args.symbol, args.interval, args.range)
 module = importlib.import_module(
     f"src.stock_scraper.scraping.apis.{stock_instance.source}"
 )
-scraping_instance = getattr(module, ''.join(word.capitalize() for word in stock_instance.source.split('_')))() # getattr(ファイル名, クラス名) -> classの取得
+scraping_instance = getattr(
+    module, "".join(word.capitalize() for word in stock_instance.source.split("_"))
+)()  # getattr(ファイル名, クラス名) -> classの取得
 
 app = FastAPI()
-
-@app.get("/root")
-async def root():
-    return {"message": "Welcome to the Stock Scraper API!"}
 
 
 # 定期実行処理
@@ -45,6 +43,11 @@ async def pipline():
     print(f"株価情報🚀: {stock_instance_copy}")
     # インスタンスをdbに保存する
     await insert_stocke_instance(stock_instance_copy)
+
+
+@app.get("/root")
+async def root():
+    return {"message": "Welcome to the Stock Scraper API!"}
 
 
 @app.on_event("startup")

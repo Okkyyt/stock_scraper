@@ -1,5 +1,6 @@
 import argparse
 
+
 def execute_cli():
     parser = argparse.ArgumentParser(
         prog="Stock Scraper",
@@ -33,5 +34,6 @@ def execute_cli():
     args = parser.parse_args()
 
     return args
+
 
 execute_cli()

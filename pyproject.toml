@@ -7,7 +7,6 @@ requires-python = "==3.11.3"
 dependencies = [
     "aiohttp==3.9.3",
     "apscheduler==3.11.0",
-    "boto3==1.35.23",
     "fastapi==0.110.0",
     "python-dotenv==1.0.1",
     "asyncpg==0.30.0",
@@ -16,6 +15,7 @@ dependencies = [
     "nest-asyncio==1.5.8",
     "pytest==8.3.5",
     "websockets==15.0.1",
+    "ruff==0.11.9",
 ]
 
 [project.scripts]
@@ -29,3 +29,9 @@ build-backend = "hatchling.build"
 # ツールに特化した設定
 [tool.hatch.build.targets.wheel]
 packages = ["src/stock_scraper", "scripts", "tests"]
+
+# lint, format, type check
+[tool.ruff]
+line-length = 88  # blackのデフォルト
+[tool.ruff.lint]
+extend-select = ["E", "F", "I", "C90"]

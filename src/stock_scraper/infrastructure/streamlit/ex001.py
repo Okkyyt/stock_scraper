@@ -1,6 +1,7 @@
-import streamlit as st
 import asyncio
+
 import nest_asyncio
+import streamlit as st
 
 from stock_scraper.infrastructure.db.fetch_stock_instanse import fetch_stock_instance
 
