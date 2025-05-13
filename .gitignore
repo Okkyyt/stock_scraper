@@ -2,3 +2,5 @@
 .env
 __pycache__/
 stock-scraper_accessKeys.csv
+.ruff_cache
+.secrets

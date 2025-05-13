@@ -33,5 +33,6 @@ packages = ["src/stock_scraper", "scripts", "tests"]
 # lint, format, type check
 [tool.ruff]
 line-length = 88  # blackのデフォルト
+
 [tool.ruff.lint]
 extend-select = ["E", "F", "I", "C90"]
