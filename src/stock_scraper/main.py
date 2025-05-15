@@ -1,12 +1,12 @@
-import importlib
 import copy
+import importlib
+
 import uvicorn
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
 
 from .api.set_stock_instance import set_stock_instance
 from .domain.execute_cli import execute_cli
-from .infrastructure.db.create_table import create_tables
 from .infrastructure.db.insert_stock_instanse import insert_stocke_instance
 
 # CLI引数の取得

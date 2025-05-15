@@ -3,6 +3,9 @@ from stock_scraper.infrastructure.db.connect import make_conn
 
 async def create_tables():
     conn = await make_conn()
+    if conn is None:
+        print("❌ DB接続エラー")
+        return
     try:
 
         await conn.execute(

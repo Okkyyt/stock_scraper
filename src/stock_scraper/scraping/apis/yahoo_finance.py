@@ -5,7 +5,7 @@ from ..scraping import get_aiohttp
 
 class YahooFinance:
     # セッション、ウェブソケットの作成
-    def create_session(self):
+    async def create_session(self):
         return aiohttp.ClientSession()
 
     # スクレイピングurlの作成、メッセージの作成

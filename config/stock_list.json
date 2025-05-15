@@ -28,7 +28,7 @@
       "name": "Toyota",
       "type": "stock",
       "country": "JP",
-      "source": "finhub"
+      "source": "alpha_vantage"
     },
     "9432.T": {
       "name": "NTT",

@@ -7,6 +7,9 @@ async def insert_stocke_instance(stock_instance):
     """
     # DBに接続
     conn = await make_conn()
+    if conn is None:
+        print("❌ DB接続エラー")
+        return
     try:
         await conn.execute(
             """
