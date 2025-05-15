@@ -3,13 +3,14 @@ import os
 from dotenv import load_dotenv
 
 from ..scraping import get_aiohttp
+from ..base_scraper import Scraper
 
 load_dotenv()
 
 ALPHAVANTAGE_API_KEY = os.getenv("ALPHAVANTAGE_API_KEY")
 
 
-class AlphaVantage:
+class AlphaVantage(Scraper):
     # セッション、ウェブソケットの作成
     def create_session(self):
         return aiohttp.ClientSession()

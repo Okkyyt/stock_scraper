@@ -1,9 +1,10 @@
 import aiohttp
 
 from ..scraping import get_aiohttp
+from ..base_scraper import Scraper
 
 
-class YahooFinance:
+class YahooFinance(Scraper):
     # セッション、ウェブソケットの作成
     def create_session(self):
         return aiohttp.ClientSession()
