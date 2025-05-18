@@ -43,7 +43,7 @@ async def pipline():
 
     print(f"株価情報🚀: {stock_instance_copy}")
     # インスタンスをdbに保存する
-    await insert_stocke_instance(stock_instance_copy)
+    # await insert_stocke_instance(stock_instance_copy)
 
 
 @app.get("/root")

@@ -18,8 +18,7 @@ class AlphaVantage(Scraper):
 
     # スクレイピングurlの作成、メッセージの作成
     def preprocess(self, stock_instance):
-        # url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={stock_instance.symbol_name}&interval={stock_instance.interval}&apikey={ALPHAVANTAGE_API_KEY}"
-        url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&apikey=demo'
+        url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={stock_instance.symbol_id}&interval=5min&apikey={ALPHAVANTAGE_API_KEY}"
         return url
 
     # スクレイピングの実行

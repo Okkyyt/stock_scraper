@@ -16,7 +16,7 @@
       "name": "Apple",
       "type": "stock",
       "country": "US",
-      "source": "yahoo"
+      "source": "alpha_vantage"
     },
     "NVDA": {
       "name": "NVIDIA",
@@ -28,13 +28,13 @@
       "name": "Toyota",
       "type": "stock",
       "country": "JP",
-      "source": "alpha_vantage"
+      "source": "finhub"
     },
     "9432.T": {
       "name": "NTT",
       "type": "stock",
       "country": "JP",
-      "source": "alpha_vantage"
+      "source": "yahoo_finance"
     } 
   }
 }
