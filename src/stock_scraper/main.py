@@ -39,7 +39,7 @@ async def pipline():
     postprocess = scraping_instance.postprocess(response)
     # stock_instanceの更新
     stock_instance_copy = copy.deepcopy(stock_instance)
-    stock_instance_copy.stock_data = postprocess
+    stock_instance_copy.feature_ = postprocess
 
     print(f"株価情報🚀: {stock_instance_copy}")
     # インスタンスをdbに保存する

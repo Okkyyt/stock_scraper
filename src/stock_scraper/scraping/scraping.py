@@ -1,9 +1,13 @@
 import json
 
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (compatible; Bot/0.1)",
+    "Accept": "application/json, text/plain, */*",
+}
 
 async def get_aiohttp(session, url):
     try:
-        async with session.get(url) as res:
+        async with session.get(url, headers=HEADERS) as res:
             print(f'ステータス：{res.status}')
             return await res.json()
     except Exception as e:
