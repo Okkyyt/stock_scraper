@@ -6,6 +6,7 @@ HEADERS = {
 }
 
 async def get_aiohttp(session, url):
+    print(f"URL: {url}")
     try:
         async with session.get(url, headers=HEADERS) as res:
             print(f'ステータス：{res.status}')

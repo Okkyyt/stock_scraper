@@ -12,7 +12,7 @@ class YahooFinance(Scraper):
 
     # スクレイピングurlの作成、メッセージの作成
     def preprocess(self, stock_instance):
-        url = f"https://query1.finance.yahoo.com/v8/finance/chart/{stock_instance.symbol_id}"
+        url = f"https://query1.finance.yahoo.com/v8/finance/chart/{stock_instance.symbol_id}?interval={stock_instance.interval}"
         return url
 
     # スクレイピングの実行
