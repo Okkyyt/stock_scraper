@@ -1,40 +1,40 @@
 {
   "symbols": {
-    "^225": {
+    "^N225": {
       "name": "Nikkei-225",
-        "type": "index",
-        "country": "JP",
-        "source": "yahoo"
+      "type": "index",
+      "exchange": "JPX",
+      "source": "yahoo_finance"
     },
     "^GSPC": {
       "name": "S&P-500",
       "type": "index",
-      "country": "US",
-      "source": "yahoo"
+      "exchange": "CBOE",
+      "source": "yahoo_finance"
     },
     "AAPL": {
       "name": "Apple",
       "type": "stock",
-      "country": "US",
+      "exchange": "NASDAQ",
       "source": "alpha_vantage"
     },
     "NVDA": {
       "name": "NVIDIA",
       "type": "stock",
-      "country": "US",
-      "source": "yahoo"
+      "exchange": "NASDAQ",
+      "source": "yahoo_finance"
     },
     "7203.T": {
       "name": "Toyota",
       "type": "stock",
-      "country": "JP",
-      "source": "finhub"
+      "exchange": "JPX",
+      "source": "finnhub"
     },
     "9432.T": {
       "name": "NTT",
       "type": "stock",
-      "country": "JP",
+      "exchange": "JPX",
       "source": "yahoo_finance"
-    } 
+    }
   }
 }

@@ -1,0 +1,14 @@
+{
+    "JPX": {
+        "timezone": "Asia/Tokyo",
+        "currency": "JPY"
+    },
+    "NASDAQ": {
+        "timezone": "America/New_York",
+        "currency": "USD"
+    },
+    "CBOE": {
+        "timezone": "America/New_York",
+        "currency": "USD"
+    }
+}
