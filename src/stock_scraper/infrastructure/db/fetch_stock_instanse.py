@@ -6,7 +6,6 @@ from stock_scraper.infrastructure.db.connect import make_conn
 async def fetch_stock_instance(symbol_id):
     conn = await make_conn()
     if conn is None:
-        print('❌ DB接続エラー')
         return
     try:
         # データを取得
