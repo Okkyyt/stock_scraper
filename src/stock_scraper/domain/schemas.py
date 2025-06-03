@@ -10,7 +10,7 @@ class HasSymbol(TypedDict):
 
 
 class HasID(TypedDict):
-    id: Required[int]  # サロゲートキー (SERIAL / BIGSERIAL)
+    config_id: Required[int]  # サロゲートキー (SERIAL / BIGSERIAL)
 
 
 # 銘柄情報---------------------------------------------------------------
@@ -35,8 +35,7 @@ class Indicators(TypedDict):
     close: float
     high: float
     low: float
-    bar_volume: int
-    time_frame: str  # '1d'
+    volume: int
     adjclose: Optional[float]
 
 
@@ -54,6 +53,5 @@ class PriceSnapshot(TypedDict):
 
 
 class FetchHistory(HasID):
-    config_id: int  # FK → FetchConfig.id
     meta: FetchMeta
     price: PriceSnapshot

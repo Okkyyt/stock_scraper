@@ -65,7 +65,7 @@ def build_fetch_config(symbol: str, cli_conf) -> FetchConfig:
     uid = f"{symbol}_{source}_{time_frame}"
 
     return FetchConfig(
-        id=uid,
+        config_id=uid,
         symbol=symbol,
         source=source,
         scraping_interval=scraping_interval,

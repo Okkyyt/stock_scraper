@@ -21,7 +21,8 @@ class YahooFinance(Scraper):
         return await get_aiohttp(session, url)
 
     # 取得したデータの整形
-    def postprocess(self, res):
+    def postprocess(self, res, base_class):
+        
         # metaとindicatorsの情報
         indicators = res["chart"]["result"][0]["indicators"]["quote"][0]
         meta = res["chart"]["result"][0]["meta"]
@@ -32,12 +33,6 @@ class YahooFinance(Scraper):
         datetime_utc_list = [
             datetime.fromtimestamp(timestamp, tz=timezone.utc)
             for timestamp in timestamp_list
-        ]
-        date_id_list = [
-            int(datetime_utc.strftime("%Y%m%d")) for datetime_utc in datetime_utc_list
-        ]
-        time_id_list = [
-            int(datetime_utc.strftime("%H%M%S")) for datetime_utc in datetime_utc_list
         ]
 
         indicator_stock_price = {
@@ -51,6 +46,8 @@ class YahooFinance(Scraper):
             "regularMarketTime": meta["regularMarketTime"],
             "regularMarketPrice": meta["regularMarketPrice"],
         }
-
-        print(f"indicators: {indicator_stock_price}")
-        print(f"meta: {meta_stock_price}")
+        return base_class(
+            market_time=datetime_utc_list,
+            tick_price=meta_stock_price["regularMarketPrice"],
+            indicators=indicator_stock_price,
+        )
