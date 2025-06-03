@@ -3,8 +3,8 @@ import os
 import aiohttp
 from dotenv import load_dotenv
 
-from ..scraping import get_aiohttp
 from ..base_scraper import Scraper
+from ..scraping import get_aiohttp
 
 load_dotenv()
 
@@ -17,8 +17,8 @@ class AlphaVantage(Scraper):
         return aiohttp.ClientSession()
 
     # スクレイピングurlの作成、メッセージの作成
-    def preprocess(self, stock_instance):
-        url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={stock_instance.symbol_id}&interval=5min&apikey={ALPHAVANTAGE_API_KEY}"
+    def preprocess(self, cli_instance):
+        url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={cli_instance.symbol}&interval={cli_instance.interval}&apikey={ALPHAVANTAGE_API_KEY}"
         return url
 
     # スクレイピングの実行

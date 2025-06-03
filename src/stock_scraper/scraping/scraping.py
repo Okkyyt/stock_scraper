@@ -5,11 +5,12 @@ HEADERS = {
     "Accept": "application/json, text/plain, */*",
 }
 
+
 async def get_aiohttp(session, url):
     print(f"URL: {url}")
     try:
         async with session.get(url, headers=HEADERS) as res:
-            print(f'ステータス：{res.status}')
+            print(f"ステータス：{res.status}")
             return await res.json()
     except Exception as e:
         print(f"Error occurred: {e}")

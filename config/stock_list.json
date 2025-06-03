@@ -1,40 +1,38 @@
 {
-  "symbols": {
-    "^N225": {
-      "name": "Nikkei-225",
-      "type": "index",
-      "exchange": "JPX",
-      "source": "yahoo_finance"
-    },
-    "^GSPC": {
-      "name": "S&P-500",
-      "type": "index",
-      "exchange": "CBOE",
-      "source": "yahoo_finance"
-    },
-    "AAPL": {
-      "name": "Apple",
-      "type": "stock",
-      "exchange": "NASDAQ",
-      "source": "alpha_vantage"
-    },
-    "NVDA": {
-      "name": "NVIDIA",
-      "type": "stock",
-      "exchange": "NASDAQ",
-      "source": "yahoo_finance"
-    },
-    "7203.T": {
-      "name": "Toyota",
-      "type": "stock",
-      "exchange": "JPX",
-      "source": "finnhub"
-    },
-    "9432.T": {
-      "name": "NTT",
-      "type": "stock",
-      "exchange": "JPX",
-      "source": "yahoo_finance"
-    }
+  "^N225": {
+    "name": "Nikkei-225",
+    "type": "index",
+    "exchange": "JPX",
+    "source": "yahoo_finance"
+  },
+  "^GSPC": {
+    "name": "S&P-500",
+    "type": "index",
+    "exchange": "CBOE",
+    "source": "yahoo_finance"
+  },
+  "AAPL": {
+    "name": "Apple",
+    "type": "stock",
+    "exchange": "NASDAQ",
+    "source": "yahoo_finance"
+  },
+  "NVDA": {
+    "name": "NVIDIA",
+    "type": "stock",
+    "exchange": "NASDAQ",
+    "source": "yahoo_finance"
+  },
+  "7203.T": {
+    "name": "Toyota",
+    "type": "stock",
+    "exchange": "JPX",
+    "source": "finnhub"
+  },
+  "9432.T": {
+    "name": "NTT",
+    "type": "stock",
+    "exchange": "JPX",
+    "source": "yahoo_finance"
   }
 }
