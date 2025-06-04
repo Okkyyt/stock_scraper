@@ -1,57 +1,57 @@
 from __future__ import annotations
-
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional, Required, TypedDict
+from typing import Optional
 
+# ── 共通ミックスイン ───────────────────────────
+@dataclass(slots=True, frozen=True)
+class HasSymbol:
+    symbol: str
 
-# Config---------------------------------------------------------------
-class HasSymbol(TypedDict):
-    symbol: Required[str]  # 'AAPL' など自然キー
+@dataclass(slots=True, frozen=True)
+class HasID(HasSymbol):
+    config_id: int
 
-
-class HasID(TypedDict):
-    config_id: Required[int]  # サロゲートキー (SERIAL / BIGSERIAL)
-
-
-# 銘柄情報---------------------------------------------------------------
+# ── 銘柄プロフィール ───────────────────────────
+@dataclass(slots=True, frozen=True)
 class SymbolInfo(HasSymbol):
-    exchange: str  # 'JPX', 'NASDAQ'
-    currency: str  # 'JPY', 'USD'
+    exchange: str
+    currency: str
     name: str
-    timezone: str  # 'Asia/Tokyo'
+    timezone: str
 
+# ── CLI 設定 ──────────────────────────────────
+@dataclass(slots=True, frozen=True)
+class FetchConfig(HasID):
+    source: str
+    scraping_interval: str
+    time_frame: str
+    url: str
 
-# スクレイピング設定-------------------------------------------------
-class FetchConfig(HasID, HasSymbol):
-    source: str  # 'yahoo_finance'
-    scraping_interval: str  # '5s'
-    time_frame: str  # '1d'
-    url: str  # エンドポイント
-
-
-# 1回ごとのスクレイピング結果-------------------------------------------------
-class Indicators(TypedDict):
+# ── 1 回分の結果 ───────────────────────────────
+@dataclass(slots=True, frozen=True)
+class Indicators:
     open: float
     close: float
     high: float
     low: float
     volume: int
-    adjclose: Optional[float]
+    adjclose: Optional[float] = None
 
-
-class FetchMeta(TypedDict, total=False):
+@dataclass(slots=True, frozen=True)
+class FetchMeta:
     crawl_started_at: datetime
     fetched_at: datetime
     status_code: int
-    error_msg: str  # Optional だけ total=False で許容
+    error_msg: Optional[str] = None
 
-
-class PriceSnapshot(TypedDict):
-    market_time: datetime  # 取引所時刻
+@dataclass(slots=True, frozen=True)
+class PriceSnapshot:
+    market_time: datetime
     tick_price: float
     indicators: Indicators
 
-
+@dataclass(slots=True, frozen=True)
 class FetchHistory(HasID):
     meta: FetchMeta
     price: PriceSnapshot

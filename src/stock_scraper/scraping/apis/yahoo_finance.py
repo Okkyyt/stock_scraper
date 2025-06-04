@@ -1,27 +1,33 @@
 from datetime import datetime, timezone
-
 import aiohttp
+from stock_scraper.domain.schemas import PriceSnapshot, Indicators
 
-from ..base_scraper import Scraper
-from ..scraping import get_aiohttp
-
-
-class YahooFinance(Scraper):
+class YahooFinance:
     # セッション、ウェブソケットの作成
     async def create_session(self):
         return aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=15))
 
     # スクレイピングurlの作成、メッセージの作成
     def preprocess(self, cli_instance):
-        url = f"https://query1.finance.yahoo.com/v8/finance/chart/{cli_instance.symbol}?interval={cli_instance.interval}"
-        return url
+        return f"https://query1.finance.yahoo.com/v8/finance/chart/{cli_instance.symbol}?interval={cli_instance.interval}"
 
     # スクレイピングの実行
     async def scraping(self, session, url):
-        return await get_aiohttp(session, url)
+        HEADERS = {
+            "User-Agent": "Mozilla/5.0 (compatible; Bot/0.1)",
+            "Accept": "application/json, text/plain, */*",
+        }
+        try:
+            async with session.get(url, headers=HEADERS) as res:
+                print(f"ステータス：{res.status}")
+                return await res.json()
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            return None
+
 
     # 取得したデータの整形
-    def postprocess(self, res, base_class):
+    def postprocess(self, res):
         
         # metaとindicatorsの情報
         indicators = res["chart"]["result"][0]["indicators"]["quote"][0]
@@ -35,19 +41,14 @@ class YahooFinance(Scraper):
             for timestamp in timestamp_list
         ]
 
-        indicator_stock_price = {
-            "open": indicators["open"],
-            "close": indicators["close"],
-            "high": indicators["high"],
-            "low": indicators["low"],
-            "volume": indicators["volume"],
-        }
-        meta_stock_price = {
-            "regularMarketTime": meta["regularMarketTime"],
-            "regularMarketPrice": meta["regularMarketPrice"],
-        }
-        return base_class(
+        return PriceSnapshot(
             market_time=datetime_utc_list,
-            tick_price=meta_stock_price["regularMarketPrice"],
-            indicators=indicator_stock_price,
+            tick_price=meta["regularMarketPrice"],
+            indicators=Indicators(
+                open=indicators["open"],
+                close=indicators["close"],
+                high=indicators["high"],
+                low=indicators["low"],
+                volume=indicators["volume"]
+            ),
         )

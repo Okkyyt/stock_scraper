@@ -1,7 +1,7 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
 
-from stock_scraper.domain.test_schemas import FetchMeta, PriceSnapshot, FetchHistory
+from stock_scraper.domain.schemas import FetchMeta, PriceSnapshot, FetchHistory
 
 
 def create_app(scraper, stock_conf) -> FastAPI:
@@ -9,26 +9,14 @@ def create_app(scraper, stock_conf) -> FastAPI:
 
     # 定期実行処理
     async def pipline():
-        print(f"銘柄: {stock_conf['symbol']}")
+        print(f"銘柄: {stock_conf.symbol}")
         # aiohttpセッションを取得
         session = app.state.session
         # スクレイピングの実行
-        res = await scraper.scraping(session, stock_conf['url'])
+        res = await scraper.scraping(session, stock_conf.url)
         # 取得したデータの整形
-        # 整形の型
-        ## ステータスログ
-        # fetch_meta = scraper.postprocess(res, FetchMeta)
-        ## 取得情報
-        price_snapshot = scraper.postprocess(res, PriceSnapshot)
-        print(price_snapshot)
-
-        re_feature = FetchHistory(
-            symbol=stock_conf['symbol'],
-            config_id= stock_conf['config_id'],
-            # fetch_meta=fetch_meta,
-            price_snapshot=price_snapshot,
-        )
-
+        re_feature = scraper.postprocess(res)
+        print(f"取得したデータ: {re_feature}")
 
         # インスタンスをdbに保存する
         # await insert_stocke_instance(stock_instance_copy)
