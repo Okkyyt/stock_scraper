@@ -9,46 +9,59 @@ async def create_tables():
 
         await conn.execute(
             """
-            CREATE TABLE IF NOT EXISTS symbol_data (
-                id serial PRIMARY KEY,
-                symbol_id VARCHAR(10) UNIQUE NOT NULL,
-                symbol_name text,
-                url text,
-                source text
+            CREATE TABLE IF NOT EXISTS symbol_info (
+                symbol VARCHAR(50) PRIMARY KEY,
+                exchange VARCHAR(10),
+                currency VARCHAR(10),
+                name VARCHAR(100),
+                timezone VARCHAR(50)
             );
             """
         )
 
         await conn.execute(
             """
-            CREATE TABLE IF NOT EXISTS stock_meta_price (
-                id serial PRIMARY KEY,
-                symbol_id VARCHAR(10) REFERENCES symbol_data(symbol_id),
-                date_id integer,
-                time_id integer,
-                regular_market_time integer,
-                regular_market_price NUMERIC,
-                interval VARCHAR(10)
+            CREATE TABLE IF NOT EXISTS fetch_config (
+                symbol VARCHAR(50) PRIMARY KEY,
+                config_id SERIAL PRIMARY KEY,
+                source VARCHAR(50),
+                scraping_interval VARCHAR(20),
+                time_frame VARCHAR(20),
+                url TEXT,
+                FOREIGN KEY (symbol) REFERENCES symbol_info(symbol)
+            """
+        )
+
+        await conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS price_snapshot (
+                config_id INT,
+                market_time TIMESTAMP WITH TIME ZONE,
+                tick_price FLOAT,
+                open FLOAT,
+                close FLOAT,
+                high FLOAT,
+                low FLOAT,
+                volume INT,
+                adjclose FLOAT,
+                FOREIGN KEY (config_id) REFERENCES fetch_config(config_id)
             );
             """
         )
 
         await conn.execute(
             """
-            CREATE TABLE IF NOT EXISTS stock_indicator_price (
-                id serial PRIMARY KEY,
-                symbol_id VARCHAR(10) REFERENCES symbol_data(symbol_id),
-                date_id integer,
-                time_id integer,
-                interval text,
-                open NUMERIC,
-                high NUMERIC,
-                low NUMERIC,
-                close NUMERIC,
-                volume BIGINT
+            CREATE TABLE IF NOT EXISTS fetch_log(
+                config_id INT,
+                crawl_started_at TIMESTAMP WITH TIME ZONE,
+                fetched_at TIMESTAMP WITH TIME ZONE,
+                status_code INT,
+                error_msg TEXT,
+                FOREIGN KEY (config_id) REFERENCES fetch_config(config_id)
             );
             """
         )
+
         print("✅ テーブル作成 or 作成済み")
         await conn.close()
         print("✅ DB接続終了")
