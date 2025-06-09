@@ -1,6 +1,8 @@
 import argparse
 from dataclasses import dataclass
 from typing import Optional
+import re
+from datetime import timedelta
 
 
 @dataclass(slots=True)
@@ -52,7 +54,7 @@ def build_parser():
         "-i",
         "--interval",
         type=str,
-        required=True,
+        default=None,
     )
     indicators.add_argument(
         "-r",
@@ -65,11 +67,37 @@ def build_parser():
     return parser
 
 
+def parse_time_period(time_str: str) -> timedelta:
+    match = re.match(r"^(\d+)([smhdw])$", time_str.strip().lower())
+    if not match:
+        raise ValueError("Invalid time format. Use 'Ns', 'Nm', 'Nh', 'Nd', 'Nw'.")
+
+    value, unit = int(match.group(1)), match.group(2)
+    if unit == "s":
+        return timedelta(seconds=value)
+    elif unit == "m":
+        return timedelta(minutes=value)
+    elif unit == "h":
+        return timedelta(hours=value)
+    elif unit == "d":
+        return timedelta(days=value)
+    elif unit == "w":
+        return timedelta(weeks=value)
+    else:
+        raise ValueError("Unsupported time unit.")
+
+
 def parse_cli(args=None) -> CLIConfig:
     parser = build_parser()
     parsed_args = parser.parse_args(args)
-    print(parsed_args)
-    # intervalのデフォルト値を設定
-    if not hasattr(parsed_args, "interval"):
+    # デフォルト値を設定
+    parsed_args.bins = parse_time_period(parsed_args.bins)
+    if parsed_args.interval is None:
         parsed_args.interval = parsed_args.bins
+    else:
+        parsed_args.interval = parse_time_period(parsed_args.interval)
+    if parsed_args.range_ is None:
+        parsed_args.range_ = parsed_args.bins
+    else:
+        parsed_args.range_ = parse_time_period(parsed_args.range_)
     return CLIConfig(**parsed_args.__dict__)
