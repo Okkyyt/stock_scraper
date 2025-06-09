@@ -16,7 +16,6 @@ def create_app(scraper, stock_conf) -> FastAPI:
         session = app.state.session
         # スクレイピングの実行
         res, stauts_meta = await scraper.scraping(session, stock_conf.url)
-        print(stauts_meta)
         # 取得したデータの整形
         price_snapshot = scraper.postprocess(res)
 
