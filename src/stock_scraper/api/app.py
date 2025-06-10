@@ -2,25 +2,26 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
 
 from stock_scraper.domain.schemas import FetchHistory
+from stock_scraper.infrastructure.db.create_table import create_tables
 
 
-def create_app(scraper, stock_conf) -> FastAPI:
+def create_app(scraper, symbol_info, fetch_conf) -> FastAPI:
     app = FastAPI()
 
     # 定期実行処理
     async def pipline():
-        print(f"銘柄: {stock_conf.symbol}")
-        print(f"スクレイピングURL: {stock_conf.url}")
+        print(f"銘柄: {fetch_conf.symbol}")
+        print(f"スクレイピングURL: {fetch_conf.url}")
         # aiohttpセッションを取得
         session = app.state.session
         # スクレイピングの実行
-        res, stauts_meta = await scraper.scraping(session, stock_conf.url)
+        res, stauts_meta = await scraper.scraping(session, fetch_conf.url)
         # 取得したデータの整形
         price_snapshot = scraper.postprocess(res)
 
         re_features = FetchHistory(
-            symbol=stock_conf.symbol,
-            config_id=stock_conf.config_id,
+            symbol=fetch_conf.symbol,
+            config_id=fetch_conf.config_id,
             status_meta=stauts_meta,
             price=price_snapshot,
         )
@@ -35,20 +36,22 @@ def create_app(scraper, stock_conf) -> FastAPI:
 
     @app.on_event("startup")
     async def skd_startup():
+        # データベースのテーブルを作成
+        await create_tables()
         # セッション作成
         app.state.session = await scraper.create_session()
         # スケジューラのインスタンスを作成
-        scheduler = AsyncIOScheduler(timezone="Asia/Tokyo")
+        scheduler = AsyncIOScheduler(timezone=symbol_info.timezone)
         app.state.scheduler = scheduler
         # スケジューリング設定
         try:
             scheduler.add_job(
                 pipline,
                 trigger="cron",
-                **stock_conf.scraping_interval,
+                **fetch_conf.scraping_interval,
                 max_instances=5,
             )
-            print(f"スケジューリング設定: {stock_conf.scraping_interval}")
+            print(f"スケジューリング設定: {fetch_conf.scraping_interval}")
         except Exception as e:
             print(f"スケジューリング設定に失敗: {e}")
             raise e

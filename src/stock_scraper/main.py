@@ -17,10 +17,8 @@ scraper = make_scraper(cli_conf.symbol)
 symbol_info = build_symbol_info(cli_conf.symbol)
 # スクレイピング設定を取得
 fetch_conf = build_fetch_config(cli_conf.symbol, cli_conf)
-# データベースのテーブルを作成
-create_tables()  # IF NOT EXISTS付き
 
-app = create_app(scraper, fetch_conf)
+app = create_app(scraper, symbol_info, fetch_conf)
 
 
 def main():
