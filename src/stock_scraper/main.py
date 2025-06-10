@@ -1,8 +1,8 @@
 import uvicorn
 
+from .api.app import create_app
 from .domain.cli import parse_cli
 from .domain.set_dict import build_fetch_config, build_symbol_info, make_scraper
-from .api.app import create_app
 
 # コマンドライン引数を受取
 cli_conf = parse_cli()

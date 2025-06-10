@@ -6,6 +6,7 @@ from typing import Any, Dict
 
 from src.stock_scraper.config_loader import load_config
 from src.stock_scraper.domain.schemas import FetchConfig, SymbolInfo
+from src.stock_scraper.domain.time_period import revert_time_period
 
 # ── 設定ファイル読込 ──────────────────────────────
 _STOCK: Dict[str, Dict[str, Any]] = load_config("config/stock_list.json")
@@ -58,11 +59,13 @@ def build_fetch_config(symbol: str, cli_conf) -> FetchConfig:
     source = row["source"]
     scraping_interval = cli_conf.bins
     time_frame = cli_conf.interval or scraping_interval
+    time_map = {"day": "d", "hour": "h", "minute": "m", "second": "s"}
+    time_frame_str = revert_time_period(time_frame, time_map)
 
     scraper = _import_scraper(source)
 
     # ユニークな ID を生成
-    uid = f"{symbol}_{source}_{time_frame}"
+    uid = f"{symbol}_{source}_{time_frame_str}"
 
     return FetchConfig(
         config_id=uid,

@@ -1,8 +1,8 @@
 import argparse
 from dataclasses import dataclass
 from typing import Optional
-import re
-from datetime import timedelta
+
+from src.stock_scraper.domain.time_period import parse_time_period
 
 
 @dataclass(slots=True)
@@ -67,26 +67,6 @@ def build_parser():
     return parser
 
 
-def parse_time_period(time_str: str) -> timedelta:
-    match = re.match(r"^(\d+)([smhdw])$", time_str.strip().lower())
-    if not match:
-        raise ValueError("Invalid time format. Use 'Ns', 'Nm', 'Nh', 'Nd', 'Nw'.")
-
-    value, unit = int(match.group(1)), match.group(2)
-    if unit == "s":
-        return timedelta(seconds=value)
-    elif unit == "m":
-        return timedelta(minutes=value)
-    elif unit == "h":
-        return timedelta(hours=value)
-    elif unit == "d":
-        return timedelta(days=value)
-    elif unit == "w":
-        return timedelta(weeks=value)
-    else:
-        raise ValueError("Unsupported time unit.")
-
-
 def parse_cli(args=None) -> CLIConfig:
     parser = build_parser()
     parsed_args = parser.parse_args(args)
@@ -97,7 +77,7 @@ def parse_cli(args=None) -> CLIConfig:
     else:
         parsed_args.interval = parse_time_period(parsed_args.interval)
     if parsed_args.range_ is None:
-        parsed_args.range_ = parsed_args.bins
+        parsed_args.range_ = parsed_args.interval
     else:
         parsed_args.range_ = parse_time_period(parsed_args.range_)
     return CLIConfig(**parsed_args.__dict__)

@@ -1,6 +1,9 @@
 from datetime import datetime, timezone
+
 import aiohttp
-from stock_scraper.domain.schemas import PriceSnapshot, Indicators, FetchMeta
+
+from stock_scraper.domain.schemas import FetchMeta, Indicators, PriceSnapshot
+from stock_scraper.domain.time_period import revert_time_period
 
 
 class YahooFinance:
@@ -10,23 +13,10 @@ class YahooFinance:
 
     # スクレイピングurlの作成、メッセージの作成
     def preprocess(self, cli_instance):
-        # s, m, h, d, w, mo 型にする
-        def format_timedelta(td):
-            total_seconds = int(td.total_seconds())
-
-            if total_seconds % (7 * 24 * 3600) == 0:
-                return f"{total_seconds // (7 * 24 * 3600)}w"
-            elif total_seconds % (24 * 3600) == 0:
-                return f"{total_seconds // (24 * 3600)}d"
-            elif total_seconds % 3600 == 0:
-                return f"{total_seconds // 3600}h"
-            elif total_seconds % 60 == 0:
-                return f"{total_seconds // 60}m"
-            else:
-                return f"{total_seconds}s"
-
-        interval = format_timedelta(cli_instance.interval)
-        return f"https://query1.finance.yahoo.com/v8/finance/chart/{cli_instance.symbol}?interval={interval}"
+        time_map = {"day": "d", "hour": "h", "minute": "m", "second": "s"}
+        interval = revert_time_period(cli_instance.interval, time_map)
+        range_ = revert_time_period(cli_instance.range_, time_map)
+        return f"https://query1.finance.yahoo.com/v8/finance/chart/{cli_instance.symbol}?interval={interval}&range={range_}"
 
     # スクレイピングの実行
     async def scraping(self, session, url):

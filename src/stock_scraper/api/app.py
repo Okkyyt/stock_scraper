@@ -2,7 +2,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
 
 from stock_scraper.domain.schemas import FetchHistory
-from stock_scraper.domain.format_timedelta import timedelta_to_interval_kwargs
+from stock_scraper.infrastructure.db.create_table import create_tables
 
 
 def create_app(scraper, stock_conf) -> FastAPI:
@@ -39,25 +39,22 @@ def create_app(scraper, stock_conf) -> FastAPI:
         # セッション作成
         app.state.session = await scraper.create_session()
         # スケジューラのインスタンスを作成
-        scheduler = AsyncIOScheduler()
+        scheduler = AsyncIOScheduler(timezone="Asia/Tokyo")
         app.state.scheduler = scheduler
         # データベースのテーブル作成
-        # await create_tables()  # IF NOT EXISTS付き
-        scraping_interval = timedelta_to_interval_kwargs(stock_conf.scraping_interval)
-        # スケジューラに定期実行する関数を登録(15:30に実行)
-        # scheduler.add_job(pipline, "cron", hour=15, minute=30, max_instances=5)
-        # テスト用に10秒ごとに実行
-        scheduler.add_job(
-            pipline,
-            "interval",
-            weeks=scraping_interval.weeks,
-            days=scraping_interval.days,
-            hours=scraping_interval.hours,
-            minutes=scraping_interval.minutes,
-            seconds=scraping_interval.seconds,
-            max_instances=5,
-        )
-
+        await create_tables()  # IF NOT EXISTS付き
+        # スケジューリング設定
+        try:
+            scheduler.add_job(
+                pipline,
+                trigger="cron",
+                **stock_conf.scraping_interval,
+                max_instances=5,
+            )
+            print(f"スケジューリング設定: {stock_conf.scraping_interval}")
+        except Exception as e:
+            print(f"スケジューリング設定に失敗: {e}")
+            raise e
         # スケジューラを開始
         scheduler.start()
 
