@@ -2,7 +2,7 @@ import argparse
 from dataclasses import dataclass
 from typing import Optional
 
-from src.stock_scraper.domain.time_period import parse_time_period
+from stock_scraper.domain.time_period import parse_time_period
 
 
 @dataclass(slots=True)

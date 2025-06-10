@@ -1,8 +1,13 @@
 import uvicorn
 
-from .api.app import create_app
-from .domain.cli import parse_cli
-from .domain.set_dict import build_fetch_config, build_symbol_info, make_scraper
+from stock_scraper.api.app import create_app
+from stock_scraper.domain.cli import parse_cli
+from stock_scraper.domain.set_dict import (
+    build_fetch_config,
+    build_symbol_info,
+    make_scraper,
+)
+from stock_scraper.infrastructure.db.create_table import create_tables
 
 # コマンドライン引数を受取
 cli_conf = parse_cli()
@@ -12,6 +17,8 @@ scraper = make_scraper(cli_conf.symbol)
 symbol_info = build_symbol_info(cli_conf.symbol)
 # スクレイピング設定を取得
 fetch_conf = build_fetch_config(cli_conf.symbol, cli_conf)
+# データベースのテーブルを作成
+create_tables()  # IF NOT EXISTS付き
 
 app = create_app(scraper, fetch_conf)
 

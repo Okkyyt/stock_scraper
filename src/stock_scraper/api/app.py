@@ -2,7 +2,6 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
 
 from stock_scraper.domain.schemas import FetchHistory
-from stock_scraper.infrastructure.db.create_table import create_tables
 
 
 def create_app(scraper, stock_conf) -> FastAPI:
@@ -41,8 +40,6 @@ def create_app(scraper, stock_conf) -> FastAPI:
         # スケジューラのインスタンスを作成
         scheduler = AsyncIOScheduler(timezone="Asia/Tokyo")
         app.state.scheduler = scheduler
-        # データベースのテーブル作成
-        await create_tables()  # IF NOT EXISTS付き
         # スケジューリング設定
         try:
             scheduler.add_job(

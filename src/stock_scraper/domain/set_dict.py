@@ -4,9 +4,9 @@ from __future__ import annotations
 import importlib
 from typing import Any, Dict
 
-from src.stock_scraper.config_loader import load_config
-from src.stock_scraper.domain.schemas import FetchConfig, SymbolInfo
-from src.stock_scraper.domain.time_period import revert_time_period
+from stock_scraper.config_loader import load_config
+from stock_scraper.domain.schemas import FetchConfig, SymbolInfo
+from stock_scraper.domain.time_period import revert_time_period
 
 # ── 設定ファイル読込 ──────────────────────────────
 _STOCK: Dict[str, Dict[str, Any]] = load_config("config/stock_list.json")
