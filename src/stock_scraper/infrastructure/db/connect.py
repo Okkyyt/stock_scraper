@@ -34,7 +34,3 @@ async def make_conn():
     except Exception as e:
         print("❌ DB接続失敗:", e)
         return None
-
-
-# 確認
-# print(asyncio.run(make_conn()))

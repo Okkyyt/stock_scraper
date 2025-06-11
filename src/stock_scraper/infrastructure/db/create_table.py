@@ -22,8 +22,8 @@ async def create_tables():
         await conn.execute(
             """
             CREATE TABLE IF NOT EXISTS fetch_config (
-                symbol VARCHAR(50) PRIMARY KEY,
-                config_id SERIAL PRIMARY KEY,
+                symbol VARCHAR(50),
+                config_id VARCHAR(50 PRIMARY KEY,
                 source VARCHAR(50),
                 scraping_interval VARCHAR(20),
                 time_frame VARCHAR(20),
@@ -35,7 +35,7 @@ async def create_tables():
         await conn.execute(
             """
             CREATE TABLE IF NOT EXISTS price_snapshot (
-                config_id INT,
+                config_id VARCHAR(50),
                 market_time TIMESTAMP WITH TIME ZONE,
                 tick_price FLOAT,
                 open FLOAT,
@@ -52,7 +52,7 @@ async def create_tables():
         await conn.execute(
             """
             CREATE TABLE IF NOT EXISTS fetch_log(
-                config_id INT,
+                config_id VARCHAR(50),
                 crawl_started_at TIMESTAMP WITH TIME ZONE,
                 fetched_at TIMESTAMP WITH TIME ZONE,
                 status_code INT,
