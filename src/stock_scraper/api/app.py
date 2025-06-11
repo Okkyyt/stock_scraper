@@ -1,8 +1,9 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
 
-from stock_scraper.domain.schemas import SymbolInfo, FetchConfig, FetchHistory
+from stock_scraper.domain.schemas import FetchConfig, FetchHistory, SymbolInfo
 from stock_scraper.infrastructure.db.create_table import create_tables
+
 
 # scraper -> src/stock_scraper/scraping/apis/{source}.py のクラスインスタンス
 def create_app(scraper, symbol_info: SymbolInfo, fetch_conf: FetchConfig) -> FastAPI:

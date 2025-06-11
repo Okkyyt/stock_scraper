@@ -1,5 +1,5 @@
+from stock_scraper.domain.schemas import FetchConfig, FetchHistory, SymbolInfo
 from stock_scraper.infrastructure.db.connect import make_conn
-from stock_scraper.domain.schemas import SymbolInfo, FetchConfig, FetchHistory
 
 
 async def insert_symbol_info(symbol_info: SymbolInfo):
@@ -26,6 +26,7 @@ async def insert_symbol_info(symbol_info: SymbolInfo):
         await conn.close()
         print("✅ DB接続終了")
 
+
 async def insert_fetch_config(fetch_conf: FetchConfig):
     conn = await make_conn()
     if conn is None:
@@ -50,6 +51,7 @@ async def insert_fetch_config(fetch_conf: FetchConfig):
     finally:
         await conn.close()
         print("✅ DB接続終了")
+
 
 async def insert_fetch_features(fetch_history: FetchHistory):
     conn = await make_conn()
