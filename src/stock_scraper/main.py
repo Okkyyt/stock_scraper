@@ -7,7 +7,6 @@ from stock_scraper.domain.set_dict import (
     build_symbol_info,
     make_scraper,
 )
-from stock_scraper.infrastructure.db.create_table import create_tables
 
 # コマンドライン引数を受取
 cli_conf = parse_cli()

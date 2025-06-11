@@ -7,6 +7,7 @@ from typing import Any, Dict
 from stock_scraper.config_loader import load_config
 from stock_scraper.domain.schemas import FetchConfig, SymbolInfo
 from stock_scraper.domain.time_period import revert_time_period
+from stock_scraper.domain.cli import CLIConfig
 
 # ── 設定ファイル読込 ──────────────────────────────
 _STOCK: Dict[str, Dict[str, Any]] = load_config("config/stock_list.json")
@@ -51,7 +52,7 @@ def build_symbol_info(symbol: str) -> SymbolInfo:
 
 
 # ── 2) FetchConfig ファクトリ ─────────────────────
-def build_fetch_config(symbol: str, cli_conf) -> FetchConfig:
+def build_fetch_config(symbol: str, cli_conf: CLIConfig) -> FetchConfig:
     row = _STOCK.get(symbol)
     if not row:
         raise ValueError(f"Unknown symbol: {symbol}")
