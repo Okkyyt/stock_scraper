@@ -3,6 +3,7 @@ from fastapi import FastAPI
 
 from stock_scraper.domain.schemas import FetchConfig, FetchHistory, SymbolInfo
 from stock_scraper.infrastructure.db.create_table import create_tables
+from stock_scraper.infrastructure.db.insert import upsert_symbol_info, upsert_fetch_config, insert_fetch_history
 
 
 # scraper -> src/stock_scraper/scraping/apis/{source}.py のクラスインスタンス
@@ -18,18 +19,17 @@ def create_app(scraper, symbol_info: SymbolInfo, fetch_conf: FetchConfig) -> Fas
         # スクレイピングの実行
         res, stauts_meta = await scraper.scraping(session, fetch_conf.url)
         # 取得したデータの整形
-        price_snapshot = scraper.postprocess(res)
+        snapshots = scraper.postprocess(res)
 
         re_features = FetchHistory(
             symbol=fetch_conf.symbol,
-            config_id=fetch_conf.config_id,
+            config_code=fetch_conf.config_code,
             status_meta=stauts_meta,
-            price=price_snapshot,
+            price=snapshots,
         )
         print(f"取得したデータ: {re_features}")
-
         # インスタンスをdbに保存する
-        # await insert_stocke_instance(stock_instance_copy)
+        await insert_fetch_history(re_features)
 
     @app.get("/root")
     async def root():
@@ -39,6 +39,10 @@ def create_app(scraper, symbol_info: SymbolInfo, fetch_conf: FetchConfig) -> Fas
     async def skd_startup():
         # データベースのテーブルを作成
         await create_tables()
+        # 銘柄情報をDBに挿入
+        await upsert_symbol_info(symbol_info)
+        # 取得設定をDBに挿入
+        await upsert_fetch_config(fetch_conf)
         # セッション作成
         app.state.session = await scraper.create_session()
         # スケジューラのインスタンスを作成

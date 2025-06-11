@@ -3,7 +3,7 @@ import asyncio
 import nest_asyncio
 import streamlit as st
 
-from stock_scraper.infrastructure.db.fetch_stock_instanse import fetch_stock_instance
+from stock_scraper.infrastructure.db.fetch import fetch_stock_instance
 
 nest_asyncio.apply()
 

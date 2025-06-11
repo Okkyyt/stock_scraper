@@ -2,6 +2,7 @@ import os
 
 import asyncpg
 from dotenv import load_dotenv
+from contextlib import asynccontextmanager
 
 load_dotenv()
 
@@ -17,6 +18,7 @@ DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_NAME = os.getenv("DB_NAME")
 
 
+@asynccontextmanager
 async def make_conn():
     try:
         # asyncpgで普通に接続
@@ -30,7 +32,11 @@ async def make_conn():
 
         # psycopgで接続確認
         print("✅ DB接続成功")
-        return conn
+        yield conn
     except Exception as e:
         print("❌ DB接続失敗:", e)
-        return None
+        raise e
+    finally:
+        if conn:
+            await conn.close()
+            print("✅ DB接続終了")

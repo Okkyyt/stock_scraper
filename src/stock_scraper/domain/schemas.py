@@ -13,7 +13,7 @@ class HasSymbol:
 
 @dataclass(slots=True, frozen=True)
 class HasID(HasSymbol):
-    config_id: int
+    config_code: str
 
 
 # ── 銘柄プロフィール ───────────────────────────
@@ -29,20 +29,9 @@ class SymbolInfo(HasSymbol):
 @dataclass(slots=True, frozen=True)
 class FetchConfig(HasID):
     source: str
-    scraping_interval: str
-    time_frame: str
+    scraping_interval: dict
+    time_frame: dict
     url: str
-
-
-# ── 1 回分の結果 ───────────────────────────────
-@dataclass(slots=True, frozen=True)
-class Indicators:
-    open: float
-    close: float
-    high: float
-    low: float
-    volume: int
-    adjclose: Optional[float] = None
 
 
 @dataclass(slots=True, frozen=True)
@@ -56,11 +45,15 @@ class FetchMeta:
 @dataclass(slots=True, frozen=True)
 class PriceSnapshot:
     market_time: datetime
-    tick_price: float
-    indicators: Indicators
+    open: float
+    close: float
+    high: float
+    low: float
+    volume: int
+    adjclose: Optional[float] = None
 
 
 @dataclass(slots=True, frozen=True)
 class FetchHistory(HasID):
     status_meta: FetchMeta
-    price: PriceSnapshot
+    price: list[PriceSnapshot]

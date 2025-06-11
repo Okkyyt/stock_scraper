@@ -66,10 +66,10 @@ def build_fetch_config(symbol: str, cli_conf: CLIConfig) -> FetchConfig:
     scraper = _import_scraper(source)
 
     # ユニークな ID を生成
-    uid = f"{symbol}_{source}_{time_frame_str}"
+    uid = f"{symbol}-{source}-{time_frame_str}"
 
     return FetchConfig(
-        config_id=uid,
+        config_code=uid,
         symbol=symbol,
         source=source,
         scraping_interval=scraping_interval,

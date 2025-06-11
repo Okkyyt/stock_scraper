@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 import aiohttp
 
-from stock_scraper.domain.schemas import FetchMeta, Indicators, PriceSnapshot
+from stock_scraper.domain.schemas import FetchMeta, PriceSnapshot
 from stock_scraper.domain.time_period import revert_time_period
 
 
@@ -51,9 +51,8 @@ class YahooFinance:
     # 取得したデータの整形
     def postprocess(self, res):
 
-        # metaとindicatorsの情報
+        # indicatorsの情報
         indicators = res["chart"]["result"][0]["indicators"]["quote"][0]
-        meta = res["chart"]["result"][0]["meta"]
 
         # 時刻
         timestamp_list = res["chart"]["result"][0]["timestamp"]
@@ -63,14 +62,17 @@ class YahooFinance:
             for timestamp in timestamp_list
         ]
 
-        return PriceSnapshot(
-            market_time=datetime_utc_list,
-            tick_price=meta["regularMarketPrice"],
-            indicators=Indicators(
-                open=indicators["open"],
-                close=indicators["close"],
-                high=indicators["high"],
-                low=indicators["low"],
-                volume=indicators["volume"],
-            ),
-        )
+        snapshots: list[PriceSnapshot] = []
+
+        for i, ts in enumerate(datetime_utc_list):
+            snapshots.append(
+                PriceSnapshot(
+                    market_time=ts,
+                    open=indicators["open"][i],
+                    close=indicators["close"][i],
+                    high=indicators["high"][i],
+                    low=indicators["low"][i],
+                    volume=indicators["volume"][i], 
+                )
+            )
+        return snapshots
