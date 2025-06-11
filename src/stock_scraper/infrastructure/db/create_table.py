@@ -23,12 +23,13 @@ async def create_tables():
             """
             CREATE TABLE IF NOT EXISTS fetch_config (
                 symbol VARCHAR(50),
-                config_id VARCHAR(50 PRIMARY KEY,
+                config_id VARCHAR(50) PRIMARY KEY,
                 source VARCHAR(50),
                 scraping_interval VARCHAR(20),
                 time_frame VARCHAR(20),
                 url TEXT,
                 FOREIGN KEY (symbol) REFERENCES symbol_info(symbol)
+            );
             """
         )
 
