@@ -3,6 +3,7 @@ import json
 from stock_scraper.domain.schemas import FetchConfig, FetchHistory, SymbolInfo
 from stock_scraper.infrastructure.db.connect import make_conn
 
+
 # ───────────────────────────────────────────
 # 1. symbol_info ─ Insert/Update
 # ───────────────────────────────────────────
@@ -29,6 +30,7 @@ async def upsert_symbol_info(symbol_info: SymbolInfo) -> int:
         print(f"✅ 銘柄 upsert 完了: {symbol_info.symbol} (id={symbol_id})")
         return symbol_id
 
+
 # ───────────────────────────────────────────
 # 2. fetch_config ─ Insert/Update
 # ───────────────────────────────────────────
@@ -50,16 +52,17 @@ async def upsert_fetch_config(fetch_conf: FetchConfig) -> int:
                    url               = EXCLUDED.url
             RETURNING id;
             """,
-            fetch_conf.symbol,            # $1
-            fetch_conf.config_code,       # $2
-            fetch_conf.source,            # $3
-            json.dumps(fetch_conf.scraping_interval), # $4
-            json.dumps(fetch_conf.time_frame),        # $5
-            fetch_conf.url,               # $6
+            fetch_conf.symbol,  # $1
+            fetch_conf.config_code,  # $2
+            fetch_conf.source,  # $3
+            json.dumps(fetch_conf.scraping_interval),  # $4
+            json.dumps(fetch_conf.time_frame),  # $5
+            fetch_conf.url,  # $6
         )
         fetch_id = row["id"]
         print(f"✅ 取得設定 upsert 完了: {fetch_conf.config_code} (id={fetch_id})")
         return fetch_id
+
 
 # ───────────────────────────────────────────
 # 3. price_snapshot + fetch_log
@@ -69,7 +72,7 @@ async def insert_fetch_history(fetch_history: FetchHistory) -> None:
         snapshots = fetch_history.price
         m = fetch_history.status_meta
 
-        async with conn.transaction():          # ★ 同一トランザクション
+        async with conn.transaction():  # ★ 同一トランザクション
             # 1) fetch_log を先に入れて event_id を取得
             row = await conn.fetchrow(
                 """
@@ -83,11 +86,11 @@ async def insert_fetch_history(fetch_history: FetchHistory) -> None:
                 )
                 RETURNING id;
                 """,
-                fetch_history.config_code,        # $1
-                m.crawl_started_at,               # $2
-                m.fetched_at,                     # $3
-                m.status_code,                    # $4
-                m.error_msg                       # $5
+                fetch_history.config_code,  # $1
+                m.crawl_started_at,  # $2
+                m.fetched_at,  # $3
+                m.status_code,  # $4
+                m.error_msg,  # $5
             )
             event_id = row["id"]
 
@@ -116,10 +119,10 @@ async def insert_fetch_history(fetch_history: FetchHistory) -> None:
                         p.high,
                         p.low,
                         p.volume,
-                        p.adjclose
+                        p.adjclose,
                     )
                     for p in snapshots
-                ]
+                ],
             )
 
         print(f"✅ ログ＋スナップショット完了: event_id={event_id}")

@@ -1,5 +1,6 @@
 from stock_scraper.infrastructure.db.connect import make_conn
 
+
 async def create_tables():
     async with make_conn() as conn:
         # symbol_info
@@ -23,9 +24,9 @@ async def create_tables():
                 id        BIGSERIAL PRIMARY KEY,
                 symbol_id BIGINT NOT NULL
                         REFERENCES symbol_info(id) ON DELETE CASCADE,
-                config_code TEXT UNIQUE NOT NULL,           -- 例: AAPL_yahoo_5m
+                config_code TEXT UNIQUE NOT NULL,     -- 例: AAPL_yahoo_5m
                 source      VARCHAR(50),
-                time_frame  JSONB,                  -- 例: {"days": 0, "hours": 0, "minutes": 5}
+                time_frame  JSONB,     -- 例: {"days": 0, "hours": 0, "minutes": 5}
                 scraping_interval JSONB,
                 url         TEXT,
                 created_at  TIMESTAMPTZ DEFAULT now()

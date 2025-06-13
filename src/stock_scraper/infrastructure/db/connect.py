@@ -1,8 +1,8 @@
 import os
+from contextlib import asynccontextmanager
 
 import asyncpg
 from dotenv import load_dotenv
-from contextlib import asynccontextmanager
 
 load_dotenv()
 

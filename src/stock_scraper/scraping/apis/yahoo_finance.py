@@ -72,7 +72,7 @@ class YahooFinance:
                     close=indicators["close"][i],
                     high=indicators["high"][i],
                     low=indicators["low"][i],
-                    volume=indicators["volume"][i], 
+                    volume=indicators["volume"][i],
                 )
             )
         return snapshots

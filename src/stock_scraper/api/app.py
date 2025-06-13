@@ -3,7 +3,11 @@ from fastapi import FastAPI
 
 from stock_scraper.domain.schemas import FetchConfig, FetchHistory, SymbolInfo
 from stock_scraper.infrastructure.db.create_table import create_tables
-from stock_scraper.infrastructure.db.insert import upsert_symbol_info, upsert_fetch_config, insert_fetch_history
+from stock_scraper.infrastructure.db.insert import (
+    insert_fetch_history,
+    upsert_fetch_config,
+    upsert_symbol_info,
+)
 
 
 # scraper -> src/stock_scraper/scraping/apis/{source}.py のクラスインスタンス

@@ -1,12 +1,19 @@
 import asyncio
+
 from stock_scraper.config_loader import load_config
-from stock_scraper.domain.time_period import parse_time_period
 from stock_scraper.domain.cli import CLIConfig
-from stock_scraper.domain.set_dict import (
-    build_fetch_config, build_symbol_info, make_scraper,
-)
 from stock_scraper.domain.schemas import FetchHistory
-from stock_scraper.infrastructure.db.insert import insert_fetch_history, upsert_fetch_config, upsert_symbol_info
+from stock_scraper.domain.set_dict import (
+    build_fetch_config,
+    build_symbol_info,
+    make_scraper,
+)
+from stock_scraper.domain.time_period import parse_time_period
+from stock_scraper.infrastructure.db.insert import (
+    insert_fetch_history,
+    upsert_fetch_config,
+    upsert_symbol_info,
+)
 
 TIME_FRAME = "1d"  # デフォルトの時間枠
 
@@ -16,6 +23,7 @@ range = parse_time_period(TIME_FRAME)
 
 config_json = load_config("config/stock_list.json")
 symbol_list = list(config_json.keys())
+
 
 async def main():
     for symbol in symbol_list:
@@ -27,7 +35,8 @@ async def main():
 
         # sourceがyahoo_financeの場合のみ実行
         if fetch_conf.source != "yahoo_finance":
-            break
+            print(f"❌ {symbol} は yahoo_finance 以外のソースのためスキップ")
+            continue
 
         # 銘柄情報をDBに保存
         await upsert_symbol_info(symbol_info)
@@ -39,9 +48,8 @@ async def main():
             f"range={TIME_FRAME}",
             "range=max",
         )
-        print(URL)
 
-        async with (await scraper.create_session()) as session:
+        async with await scraper.create_session() as session:
             res, status_meta = await scraper.scraping(session, URL)
 
         snapshots = scraper.postprocess(res)
@@ -53,7 +61,8 @@ async def main():
         )
         # 取得結果をDBに保存
         await insert_fetch_history(record)
-        print(f"{symbol} 完了")
+        print(f"🚀{symbol} 完了")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

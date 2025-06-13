@@ -16,7 +16,6 @@ _MARKET: Dict[str, Dict[str, str]] = load_config("config/market_meta.json")
 
 # ── 動的 import 用ヘルパ ─────────────────────────
 def _import_scraper(source: str):
-    print(source)
     """
     src/stock_scraper/scraping/apis/{source}.py にある
     PascalCase のクラスを返す
@@ -25,7 +24,7 @@ def _import_scraper(source: str):
         module = importlib.import_module(f"src.stock_scraper.scraping.apis.{source}")
         scraper = getattr(
             module, "".join(word.capitalize() for word in source.split("_"))
-        ) # getattr(ファイル名, クラス名) -> classの取得
+        )  # getattr(ファイル名, クラス名) -> classの取得
         return scraper()  # インスタンス化
     except ModuleNotFoundError as e:
         raise ImportError(f"Scraper module for '{source}' not found") from e
