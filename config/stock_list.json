@@ -27,7 +27,7 @@
     "name": "Toyota",
     "type": "stock",
     "exchange": "JPX",
-    "source": "finnhub"
+    "source": "finhub"
   },
   "9432.T": {
     "name": "NTT",

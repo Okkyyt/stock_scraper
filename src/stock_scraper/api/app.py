@@ -39,9 +39,9 @@ def create_app(scraper, symbol_info: SymbolInfo, fetch_conf: FetchConfig) -> Fas
     async def skd_startup():
         # データベースのテーブルを作成
         await create_tables()
-        # 銘柄情報をDBに挿入
+        # 銘柄情報をDBに保存
         await upsert_symbol_info(symbol_info)
-        # 取得設定をDBに挿入
+        # 取得設定をDBに保存
         await upsert_fetch_config(fetch_conf)
         # セッション作成
         app.state.session = await scraper.create_session()
