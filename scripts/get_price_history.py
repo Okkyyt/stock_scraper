@@ -9,6 +9,7 @@ from stock_scraper.domain.set_dict import (
     make_scraper,
 )
 from stock_scraper.domain.time_period import parse_time_period
+from stock_scraper.infrastructure.db.create_table import create_tables
 from stock_scraper.infrastructure.db.insert import (
     insert_fetch_history,
     upsert_fetch_config,
@@ -38,6 +39,8 @@ async def main():
             print(f"❌ {symbol} は yahoo_finance 以外のソースのためスキップ")
             continue
 
+        # データベースのテーブルを作成
+        await create_tables()
         # 銘柄情報をDBに保存
         await upsert_symbol_info(symbol_info)
         # 取得設定をDBに保存
@@ -46,7 +49,7 @@ async def main():
         # urlのRANGEをMAXに書き換え
         URL = fetch_conf.url.replace(
             f"range={TIME_FRAME}",
-            "range=max",
+            "range=10y",
         )
 
         async with await scraper.create_session() as session:
