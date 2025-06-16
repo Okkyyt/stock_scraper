@@ -3,46 +3,34 @@ import pandas as pd
 from stock_scraper.infrastructure.db.connect import make_conn
 
 
-async def fetch_stock_instance(symbol_id):
-    conn = await make_conn()
-    if conn is None:
-        return
-    try:
-        # データを取得
-        symbol_data = await conn.fetch(
-            """
-            SELECT * FROM symbol_data WHERE symbol_id = $1;
-            """,
-            symbol_id,
-        )
+async def fetch_stock_price(symbol, interval, sorce='yahoo_finance'):
+    async with make_conn() as conn:
+        try:
+            # データを取得
+            records = await conn.fetch(
+                """
+                SELECT price_snapshot.*
+                FROM price_snapshot
+                JOIN fetch_config ON price_snapshot.fetch_id = fetch_config.id
+                JOIN symbol_info ON fetch_config.symbol_id = symbol_info.id
+                WHERE symbol_info.symbol = $1
+                AND fetch_config.config_code = $2
+                """,
+                symbol,
+                f"{symbol}-{sorce}-{interval}"
+            )
+        
+            return pd.DataFrame([dict(record) for record in records])
 
-        symbol_meta_price = await conn.fetch(
-            """
-            SELECT * FROM stock_meta_price WHERE symbol_id = $1;
-            """,
-            symbol_id,
-        )
-        symbol_indicator_price = await conn.fetch(
-            """
-            SELECT * FROM stock_indicator_price WHERE symbol_id = $1;
-            """,
-            symbol_id,
-        )
-        # データをdfに変換
-        symbol_df = pd.DataFrame([dict(row) for row in symbol_data])
-        symbol_meta_price_df = pd.DataFrame([dict(row) for row in symbol_meta_price])
-        symbol_indicator_price_df = pd.DataFrame(
-            [dict(row) for row in symbol_indicator_price]
-        )
+        except Exception as e:
+            print("❌ エラー:", e)
+            return None
 
-        return {
-            "symbol_data": symbol_df,
-            "symbol_meta_price": symbol_meta_price_df,
-            "symbol_indicator_price": symbol_indicator_price_df,
-        }
-    except Exception as e:
-        print("❌ エラー:", e)
-        return None
-    finally:
-        await conn.close()
-        print("✅ DB接続終了")
+
+# Usage example:
+# async def main():
+#     df = await fetch_stock_instance("AAPL", "1d")
+#     print(df)
+# if __name__ == "__main__":
+#     import asyncio
+#     asyncio.run(main())

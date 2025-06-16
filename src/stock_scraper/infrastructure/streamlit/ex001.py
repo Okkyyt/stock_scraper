@@ -1,38 +1,30 @@
 import asyncio
+import pandas as pd
 
 import nest_asyncio
 import streamlit as st
 
-from stock_scraper.infrastructure.db.fetch import fetch_stock_instance
+from stock_scraper.infrastructure.db.fetch import fetch_stock_price
 
 nest_asyncio.apply()
 
 
 @st.cache_data
-def load_data(symbol_id):
-    result = asyncio.run(fetch_stock_instance(symbol_id))
-    return (
-        result["symbol_data"],
-        result["symbol_meta_price"],
-        result["symbol_indicator_price"],
-    )
-
+def load_data(symbol)-> pd.DataFrame:
+    return asyncio.run(fetch_stock_price(symbol, '1d'))
 
 # Streamlit UI
 st.title("Stock-Scraper Dashboard")
 st.sidebar.title("Stock-Scraper Dashboard")
 
 # 読み込む株価(symbol_idを選択する)
-symbol_id = st.sidebar.text_input("Enter Symbol ID", value="AAPL")
+symbol = st.sidebar.text_input("Enter Symbol ID", value="AAPL")
 # データ読み込み
-symbol_data, symbol_meta_price, symbol_indicator_price = load_data(symbol_id)
+stock_df = load_data(symbol)
 
 # 表示
 st.subheader("Symbol Data")
-st.dataframe(symbol_data)
+st.dataframe(stock_df)
 
-st.subheader("Meta Price Data")
-st.dataframe(symbol_meta_price)
-
-st.subheader("Indicator Price Data")
-st.dataframe(symbol_indicator_price)
+# CMD
+# streamlit run <>

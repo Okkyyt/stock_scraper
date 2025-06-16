@@ -72,7 +72,7 @@ async def insert_fetch_history(fetch_history: FetchHistory) -> None:
         snapshots = fetch_history.price
         m = fetch_history.status_meta
 
-        async with conn.transaction():  # ★ 同一トランザクション
+        async with conn.transaction():
             # 1) fetch_log を先に入れて event_id を取得
             row = await conn.fetchrow(
                 """
