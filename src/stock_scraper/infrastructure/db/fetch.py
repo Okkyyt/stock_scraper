@@ -3,7 +3,7 @@ import pandas as pd
 from stock_scraper.infrastructure.db.connect import make_conn
 
 
-async def fetch_stock_price(symbol, interval, sorce='yahoo_finance'):
+async def fetch_stock_price(symbol, interval, sorce='yahoo_finance') -> pd.DataFrame | None:
     async with make_conn() as conn:
         try:
             # データを取得

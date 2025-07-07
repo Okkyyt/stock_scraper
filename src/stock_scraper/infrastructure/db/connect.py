@@ -20,6 +20,7 @@ DB_NAME = os.getenv("DB_NAME")
 
 @asynccontextmanager
 async def make_conn():
+    conn = None
     try:
         # asyncpgで普通に接続
         conn = await asyncpg.connect(
@@ -35,7 +36,7 @@ async def make_conn():
         yield conn
     except Exception as e:
         print("❌ DB接続失敗:", e)
-        raise e
+        raise
     finally:
         if conn:
             await conn.close()
